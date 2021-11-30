@@ -13,7 +13,7 @@
         "strict": true,
         "target": "es2017",
         "paths": {
-            "@app/*": ["src/*"],
+            "@app/*": ["./src/*"],
             "@common/*": ["../common/*"]
         }
     },

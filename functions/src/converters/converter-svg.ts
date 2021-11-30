@@ -57,17 +57,19 @@ class ConverterSvg implements IConverter {
         }
         return null
     }
-    convertAnchors(aTags) {
+    convertAnchors(aTags: Element[]) {
         return aTags.map((a: any) => ({ href: a.getAttribute("href"), text: a.innerHTML.toLowerCase() }));
     }
 
     async fetchAndReadData(url: string) {
-        let outputData: CalendarImportData = {
+        let outputData: CalendarData = {
             food: [],
             rest: [],
             paper: [],
             xmasTree: [],
-            year: new Date().getFullYear().toString()
+            year: new Date().getFullYear().toString(),
+            hash:"",
+            address: []
         };
         try {
             const html = await httpHandler.getHtmlFromUrl(url)

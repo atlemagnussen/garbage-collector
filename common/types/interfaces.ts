@@ -99,8 +99,7 @@ interface FirebaseCloudMessageData extends FirebaseDataCompat{
     type: GarbageType | SubscribeOperation
     municipality: string
     address: string
-    date?: string
-    id?: string
+    id: string
 }
 interface FirebaseCloudMessage {
     data: FirebaseCloudMessageData
@@ -136,7 +135,7 @@ interface TypeDate {
 }
 
 interface IConverter {
-    get(addressInput: string): Promise<CalendarImportData>
+    get(addressInput: string): Promise<CalendarData>
 }
 
 interface FirebaseSentMessages {

@@ -3,7 +3,7 @@ import helper from "./helpers/calendarHelper"
 import ripper from "./helpers/calendarRipper"
 import * as functions from "firebase-functions"
 
-export const getCalendar = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const getCal = async (req: functions.https.Request, res: functions.Response<any>) => {
     res.set("Access-Control-Allow-Origin", "https://www.avfallsrute.no")
     let response: MunicipalityRespons | CalendarData = { 
         result: "0"

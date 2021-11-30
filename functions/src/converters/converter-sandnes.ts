@@ -43,15 +43,15 @@ class ConverterSandnes implements IConverter {
         const page = await browser.newPage()
         try {
             await page.goto(baseurl)
-            page.waitFor(inputSelector)
+            page.waitForResponse(inputSelector)
             const searchField = await page.$(inputSelector)
-            await searchField.type(address)
+            await searchField?.type(address)
 
             const searchBtn = await page.$(searchBtnSelector)
-            await searchBtn.click()
-            await page.waitFor(searchResultTableSelector)
+            await searchBtn?.click()
+            await page.waitForResponse(searchResultTableSelector)
             const searchResult = await page.$(searchResultTableSelector)
-            const hrefs = await searchResult.$$eval("a[href]", this.convertAnchors)
+            const hrefs = await searchResult?.$$eval("a[href]", this.convertAnchors)
             return hrefs
         } catch (err) {
             console.error(err)
@@ -60,17 +60,19 @@ class ConverterSandnes implements IConverter {
         }
         return null
     }
-    convertAnchors(aTags) {
+    convertAnchors(aTags: Element[]) {
         return aTags.map(a => ({ href: a.getAttribute("href"), text: a.innerHTML.toLowerCase() }))
     }
 
     async fetchAndReadData(url: string) {
-        let outputData: CalendarImportData = {
+        let outputData: CalendarData = {
             food: [],
             rest: [],
             paper: [],
             xmasTree: [],
-            year: new Date().getFullYear().toString()
+            year: new Date().getFullYear().toString(),
+            hash: "",
+            address: []
         }
         
         try {

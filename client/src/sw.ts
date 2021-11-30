@@ -32,10 +32,11 @@ if (firebaseApp) {
     
         if (payload.data) {
             const data = payload.data as FirebaseCloudMessageData
-            if (data.date && data.type) {
-                title = `${data.date}, ${data.type}`
-            } else if (data.type && data.type.includes("subscr")) {
-                title = data.type
+            if (data.type) {
+                if (data.type.includes("subscr"))
+                    title = data.type
+                else
+                    title = `${data.date}, ${data.type}`
             } else if (data.title) {
                 title = data.title;
             }
@@ -44,7 +45,7 @@ if (firebaseApp) {
                 options.body = data.address;
             }
     
-            if (data.type && data.type !== "subscribe") {
+            if (data.type != "subscribed") {
                 options.icon = `https://storage.googleapis.com/atle-static/icons/${data.type}.png`;
             }
             const dataForAction = { m: data.municipality, a: data.address };

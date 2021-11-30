@@ -1,4 +1,4 @@
-import { FirebaseTimeStampOrDate, SubscriptionMessage } from "@common/types/firebasetypes"
+import { SubscriptionMessage } from "@common/types/firebasetypes"
 import admin from "./admin"
 import calendarHelper from "./calendarHelper"
 import firestore from "./firestore"
@@ -150,7 +150,8 @@ class MessagingHelper {
                 type,
                 date: date.toDate().toISOString(),
                 municipality: msg.municipality!,
-                address: msg.address!
+                address: msg.address!,
+                id: ""
             }
 
             let fcm: admin.messaging.Message = {

@@ -1,5 +1,5 @@
 import * as  crypto from "crypto"
-import { cloneDeep } from "lodash-es"
+import { cloneDeep } from "lodash"
 
 class Comparer {
     isSame(cal1: CalendarData, cal2: CalendarData) {

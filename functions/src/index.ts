@@ -1,9 +1,9 @@
 
 import * as functions from "firebase-functions"
-import cal from "./calendar"
-import lang from "./language"
-import mun from "./municipality"
-import sub from "./subscription"
+import { getCal } from "./calendar"
+import { getLang } from "./language"
+import { getMuns } from "./municipality"
+import * as sub from "./subscription"
 import * as msg from "./messaging"
 
 const extraMemory: functions.RuntimeOptions = {
@@ -17,10 +17,10 @@ const httpOnRequest = functionsRegion.https.onRequest
 export const getCalendar = functions
     .runWith(extraMemory)
     .region(region)
-    .https.onRequest(cal.get)
+    .https.onRequest(getCal)
 
-export const getLanguage = httpOnRequest(lang.get)
-export const getMunicipality = httpOnRequest(mun.get)
+export const getLanguage = httpOnRequest(getLang)
+export const getMunicipality = httpOnRequest(getMuns)
 export const subscribe = httpOnRequest(sub.subscribe)
 export const unsubscribe = httpOnRequest(sub.unsubscribe)
 export const subscriptions = httpOnRequest(sub.getSubscriptions)

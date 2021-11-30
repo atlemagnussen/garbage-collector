@@ -3,7 +3,7 @@ import * as functions from "firebase-functions"
 const db = firestore.getDb()
 import escapeHtml from "escape-html"
 
-exports.get = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const getMuns = async (req: functions.https.Request, res: functions.Response<any>) => {
     res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')
     let name = null
     if (req.query.name) {

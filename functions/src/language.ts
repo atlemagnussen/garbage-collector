@@ -3,7 +3,7 @@ const db = firestore.getDb()
 import escapeHtml from "escape-html"
 import * as functions from "firebase-functions"
 
-export const get = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const getLang = async (req: functions.https.Request, res: functions.Response<any>) => {
     res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')
     let response: MunicipalityRespons | any = {
         "result": "0"

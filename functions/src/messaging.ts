@@ -72,10 +72,11 @@ export const checkAndSendSub = async (message: functions.pubsub.Message, context
 export const testMessage = async (req: functions.https.Request, res: functions.Response<any>) => {
     let message: FirebaseCloudMessage = {
         data: {
-            "type": "rest",
-            "date": new Date().toISOString(),
-            "municipality": "test1",
-            "address": "test2"
+            type: "rest",
+            date: new Date().toISOString(),
+            municipality: "test1",
+            address: "test2",
+            id: ""
         },
         token: ""
     }
