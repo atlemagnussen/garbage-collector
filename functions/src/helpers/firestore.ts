@@ -79,3 +79,6 @@ class FirestoreCrud {
 }
 
 export default new FirestoreCrud()
+
+
+export const FirestoreTimeStamp = admin.firestore.Timestamp 

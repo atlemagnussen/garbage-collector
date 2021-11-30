@@ -1,5 +1,5 @@
-import firestore from "./helpers/firestore"
-import  msgHelper from "./helpers/messagingHelper"
+import firestore, {FirestoreTimeStamp} from "./helpers/firestore"
+import msgHelper from "./helpers/messagingHelper"
 const SUBCOLNAME = "subscription"
 class Tokens {
     async checkIfHasWrongTokenOnMsgs(subId: string) {
@@ -33,9 +33,9 @@ class Tokens {
             const msg = msgs[i]
             console.log(`Correcting for msg id '${msg._id}'`)
             const date = new Date(msg.date.toDate())
-            msg.date = FirebaseFirestore.Timestamp.fromDate(date)
+            msg.date = FirestoreTimeStamp.fromDate(date)
             const msgDate = new Date(msg.msgDate.toDate())
-            msg.msgDate = FirebaseFirestore.Timestamp.fromDate(msgDate)
+            msg.msgDate = FirestoreTimeStamp.fromDate(msgDate)
             // await firestore.createOrUpdate(MSGCOLNAME, msg, msg._id)
         }
         return true

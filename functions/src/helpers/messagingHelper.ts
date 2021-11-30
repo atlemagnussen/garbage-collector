@@ -65,7 +65,7 @@ class MessagingHelper {
             const date = lastDate.toDate()
             console.log(`Lastdate ${date.toISOString()}`)
         } else 
-            lastDate = FirebaseFirestore.Timestamp.fromDate(new Date())
+            lastDate = admin.firestore.Timestamp.fromDate(new Date())
 
         const calendar = await calendarHelper.getCalendar(calSpec.municipality, calSpec.address)
         if (!calendar) {
@@ -89,7 +89,7 @@ class MessagingHelper {
             console.error(`No next dates found for ${calendar.municipality}, ${calendar.address}`)
             return false
         }
-        const date = FirebaseFirestore.Timestamp.fromDate(next[0].date)
+        const date = admin.firestore.Timestamp.fromDate(next[0].date)
         const msgDate = this.getMessageDate(date)
         const types = next.map((n) => n.type)
         const msg: SubscriptionMessage = {
@@ -132,7 +132,7 @@ class MessagingHelper {
         dateMsg.setDate(dateMsg.getDate() - 1)
         this.setTimeToZero(dateMsg)
         dateMsg.setHours(17)
-        return FirebaseFirestore.Timestamp.fromDate(dateMsg)
+        return admin.firestore.Timestamp.fromDate(dateMsg)
     }
     setTimeToZero(d: Date) {
         d.setHours(0)

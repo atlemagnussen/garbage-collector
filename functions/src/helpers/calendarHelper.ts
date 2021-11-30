@@ -8,6 +8,7 @@ class CalendarHelper {
         if (!y) {
             year = `${new Date().getFullYear()}`
         }
+        address = address.split("-").join(" ") // if they are dashed
         console.log(`getCalendar: municipality='${municipality}', address='${address}', year=${year}`)
         const colRef = db.collection(municipality)
         const docRef = colRef.where("address", "array-contains", address).where("year", "==", year)
