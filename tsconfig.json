@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "include": [
+        "common/**/*"
+    ],
+    "exclude": [
+        "client/*",
+        "functions/*",
+        "node_modules/*"
+    ],
+    "compilerOptions": {
+        "incremental": true,
+        "target": "ES2020",
+        "module": "esnext",
+        "lib": ["es2020", "DOM"],
+        "baseUrl": ".",
+        "paths": {
+            "@common/*": ["common/*"]
+        },
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "types": ["node"],
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    }
+}

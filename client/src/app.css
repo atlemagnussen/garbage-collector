@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+html {
+    height: 100%;
+}
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+.background-image {
+    background-image: url(https://storage.googleapis.com/atle-static/backgrounds/background-blue.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(7px);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+body {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    color: rgb(34, 34, 34);
+    font-family: "HelveticaNeue-UltraLight", "Helvetica Neue UltraLight",
+        "Helvetica Neue", Arial, Helvetica, sans-serif;
+    user-select: none;
+}
+main-app {
+    z-index: 10;
+}
+
+main {
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 0;
+    display: flex;
+    z-index: 10;
+    box-sizing: border-box;
+}
+header {
+    height: auto;
+    text-align: center;
+}
+
+aside {
+    flex-basis: 25vw;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+.middle {
+    flex-basis: 50vw;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    height: auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 0.2rem;
+}
+
+@media only screen and (max-width: 640px) {
+    aside {
+        display: none;
+    }
+    .middle {
+        flex-grow: 1;
+    }
+}
+textarea {
+    width: 99%;
+}
+.svg-defs {
+    width: 0;
+    height: 0;
+    display: block;
+}

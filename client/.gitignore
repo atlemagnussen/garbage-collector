@@ -1,0 +1,14 @@
+web.no.avfallsrute.p12
+firebase-debug.log
+
+empty
+images/
+.firebase/
+src/config.js
+__/
+node_modules
+dist/
+
+.firebase
+
+.DS_Store

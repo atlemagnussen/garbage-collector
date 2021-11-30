@@ -1,0 +1,21 @@
+{
+    "include": [
+        "src",
+        "../common/**/*",
+    ],
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "esModuleInterop": true,
+        "outDir": "lib",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2017",
+        "paths": {
+            "@app/*": ["src/*"],
+            "@common/*": ["../common/*"]
+        }
+    },
+    "compileOnSave": true
+}
