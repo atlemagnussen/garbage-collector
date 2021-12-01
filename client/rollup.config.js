@@ -1,5 +1,4 @@
-// Import rollup plugins
-// import html from "@web/rollup-plugin-html"
+import path from "path"
 import resolve from "@rollup/plugin-node-resolve"
 import { terser } from "rollup-plugin-terser"
 import minifyHTML from "rollup-plugin-minify-html-literals"
@@ -7,6 +6,7 @@ import summary from "rollup-plugin-summary"
 import typescript from "@rollup/plugin-typescript"
 import copy from "rollup-plugin-copy"
 import css from "rollup-plugin-import-css"
+import alias from "@rollup/plugin-alias"
 
 import commonjs from "@rollup/plugin-commonjs"
 import replace from "@rollup/plugin-replace"
@@ -16,6 +16,8 @@ import workboxConfig from "./workbox-config"
 
 const production = !process.env.ROLLUP_WATCH
 let env = production ? "production" : "development"
+
+const projectRootDir = path.resolve(__dirname);
 
 let compileWorkers = false
 if (production)
@@ -42,6 +44,12 @@ export default [{
         resolve({browser: true}),
         commonjs(),
         typescript(),
+        alias({
+            entries: [
+                { find: "@app", replacement: path.resolve(projectRootDir, "src") },
+                { find: "@common", replacement: path.resolve(projectRootDir, "../common") }
+            ]
+        }),
         minifyHTML(),
         terser({
             ecma: 2020,
@@ -75,6 +83,12 @@ export default [{
             "process.env.NODE_ENV": JSON.stringify(env),
         }),
         typescript(),
+        alias({
+            entries: [
+                { find: "@app", replacement: path.resolve(projectRootDir, "src") },
+                { find: "@common", replacement: path.resolve(projectRootDir, "../common") }
+            ]
+        }),
         OMT(),
 		injectManifest(workboxConfig),
         terser(),

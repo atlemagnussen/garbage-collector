@@ -80,7 +80,7 @@ interface CalendarSpec {
     municipality: string
     address: string
 }
-interface SubscriptionData extends FirebaseDocument{
+export interface SubscriptionData extends FirebaseDocument{
     calendars: Array<CalendarSpec>
     token?: string
     oldtokens?: Array<string>
@@ -97,7 +97,7 @@ interface Subscription {
 
 type FirebaseDataCompat = { [key: string]: string }
 
-interface FirebaseCloudMessageData extends FirebaseDataCompat{
+export interface FirebaseCloudMessageData extends FirebaseDataCompat{
     type: GarbageType | SubscribeOperation
     municipality: string
     address: string

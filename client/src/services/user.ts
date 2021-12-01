@@ -2,7 +2,8 @@ import config from "@app/config"
 import rest from "@app/services/restService"
 import { StoredSubject } from "@app/store/reactive"
 import { getIsOnline } from "@app/store/pageStateStore"
-const subscriptions = new StoredSubject<Subscriptions>("subs", {})
+import { SubscriptionData } from "@common/types/interfaces"
+const subscriptions = new StoredSubject<SubscriptionData>("subs", {})
 export const subs = subscriptions.asObservable()
 const subId = new StoredSubject<string>("subscriptionId", "")
 const token = new StoredSubject<string>("token", "")

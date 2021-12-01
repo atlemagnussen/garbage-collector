@@ -1,3 +1,4 @@
+import { SubscriptionData } from "@common/types/interfaces"
 import firestore from "./firestore"
 const db = firestore.getDb()
 const SUBCOLNAME = "subscription"
