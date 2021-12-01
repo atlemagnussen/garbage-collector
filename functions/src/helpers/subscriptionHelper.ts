@@ -62,15 +62,16 @@ class SubscriptionHelper {
                 exists.calendars = []
             }
             exists.calendars.push({municipality, address})
-            const id = exists._id
-            Reflect.deleteProperty(exists, "_id")
-            const result = await firestore.createOrUpdate(SUBCOLNAME, exists, id)
+            exists.updated = new Date()
+            const result = await firestore.createOrUpdate(SUBCOLNAME, exists, exists._id)
             console.log(result)
-            return id
+            return exists._id
         }
         const doc: SubscriptionData = {
             token,
-            "calendars": [{municipality, address}]
+            "calendars": [{municipality, address}],
+            created: new Date(),
+            updated: new Date()
         }
         const ret = await firestore.createOrUpdate(SUBCOLNAME, doc)
         console.log(ret)

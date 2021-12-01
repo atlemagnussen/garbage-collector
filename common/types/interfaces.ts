@@ -84,6 +84,8 @@ interface SubscriptionData extends FirebaseDocument{
     calendars: Array<CalendarSpec>
     token?: string
     oldtokens?: Array<string>
+    created?: Date
+    updated?: Date
 }
 interface Subscription {
     token: string
