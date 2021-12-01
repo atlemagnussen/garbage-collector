@@ -3,6 +3,7 @@ import type { DocumentData } from "firebase/firestore/lite"
 import calendar from "@app/services/calendar"
 import { firebaseApp } from "@app/services/firebaseInit"
 import { api } from "@app/config"
+import { CalendarData, CalendarEvent, CalendarEventsData, GarbageType } from "@common/types/interfaces"
 
 const firebaseDb = getFirestore(firebaseApp)
 enableIndexedDbPersistence(firebaseDb)
@@ -107,7 +108,7 @@ class Data {
         if (!d.paper) {
             throw new Error("no paper garbage collection data")
         }
-        if (!d.xmastree) {
+        if (!d.xmasTree) {
             throw new Error("no xmastree collection data")
         }
 
@@ -115,7 +116,7 @@ class Data {
         const restEvents = this.createEvents(d.year, d.rest, "rest", "black")
         const foodEvents = this.createEvents(d.year, d.food, "food", "brown")
         const paperEvents = this.createEvents(d.year, d.paper, "paper", "green")
-        const xmasTreeEvents = this.createEvents(d.year, d.xmastree, "xmasTree", "red")
+        const xmasTreeEvents = this.createEvents(d.year, d.xmasTree, "xmasTree", "red")
         const garbageEvents = restEvents
             .concat(foodEvents)
             .concat(paperEvents)
@@ -124,7 +125,7 @@ class Data {
         return {year, garbageEvents, municipality, address}
     }
 
-    createEvents(year:string, arr:Array<string>, type:GarbageType, color:string) {
+    createEvents(year:string, arr:Array<string>, type: GarbageType, color:string) {
         const events = []
         for (let i = 0; i < arr.length; i++) {
             const event: CalendarEvent = { type, color, date: new Date() }

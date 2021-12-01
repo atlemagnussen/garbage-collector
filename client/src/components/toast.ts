@@ -4,6 +4,7 @@ import {unsafeHTML} from "lit/directives/unsafe-html.js"
 
 import toastStore from "@app/store/toastStore"
 import { Subscription } from "rxjs"
+import { Toast } from "@common/types/interfaces"
 
 @customElement('toast-messages')
 export class ToastMessages extends LitElement {

@@ -3,6 +3,7 @@ import {customElement} from "lit/decorators.js"
 import {subs} from "@app/services/user"
 import { goto } from "@app/routing/router"
 import { observe } from "@app/directives/ObservableDirective"
+import { SubscriptionData } from "@common/types/interfaces"
 @customElement('subscription-list')
 export class SubscriptionList extends LitElement {
     
@@ -18,7 +19,7 @@ export class SubscriptionList extends LitElement {
         }
     `
 
-    list(subsCals: Subscriptions) {
+    list(subsCals: SubscriptionData) {
         if (!subsCals || !subsCals.calendars || subsCals.calendars.length == 0)
             return html`<span>Ingen aktive varsler</span>`
         return subsCals.calendars?.map(c => {

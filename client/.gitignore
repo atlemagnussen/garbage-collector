@@ -12,3 +12,6 @@ dist/
 .firebase
 
 .DS_Store
+
+.rollup.cache/
+tsconfig.tsbuildinfo

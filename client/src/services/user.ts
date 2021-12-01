@@ -19,11 +19,11 @@ class User {
             "token": this.token,
             "id": this.subscriptionId
         }
-        const sub = await rest.post<Subscriptions>(config.api.subscriptions, data)
+        const sub = await rest.post<SubscriptionData>(config.api.subscriptions, data)
         subscriptions.next(sub)
     }
 
-    getCalendarSubscriptions(): Subscriptions {
+    getCalendarSubscriptions(): SubscriptionData {
         return subscriptions.get()
     }
 
@@ -62,7 +62,7 @@ class User {
         token.next(t)
     }
     deleteSubscriptions() {
-        subscriptions.next({})
+        subscriptions.next({ calendars: []})
     }
 
     async doesSubscribeToCalendar(municipality: string, address: string): Promise<boolean> {

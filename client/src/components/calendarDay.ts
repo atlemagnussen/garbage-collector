@@ -4,6 +4,7 @@ import { classMap } from "lit/directives/class-map.js"
 import {getEventsForDate} from "@app/store/calendarDataStore"
 import {getColor} from "@app/services/colorService"
 import {formatterNoDateOnly} from "@app/services/dateTime"
+import { Day } from "@common/types/interfaces"
 @customElement('calendar-day')
 export class CalendarDay extends LitElement {
     private today = new Date

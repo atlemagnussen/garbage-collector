@@ -4,6 +4,7 @@ import { selectedMun } from "./munStore"
 import { subs } from "@app/services/user"
 import data from "@app/services/data"
 import user from "@app/services/user"
+import { CalendarEventsData, Municipality } from "@common/types/interfaces"
 
 const calendarSubject = new SvelteSubject<CalendarEventsData>({
     year: 0,

@@ -1,4 +1,5 @@
 import { SvelteSubject } from "@app/store/reactive"
+import { Toast } from "@common/types/interfaces"
 
 class ToastSubject extends SvelteSubject<Toast[]> {
 

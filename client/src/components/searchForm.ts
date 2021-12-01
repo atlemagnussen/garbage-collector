@@ -6,6 +6,7 @@ import { Subscription } from "rxjs"
 import { gotoPath } from "@app/routing/router"
 import { displaySearch, hideDisplaySearch } from "@app/store/pageStateStore"
 import toast from "@app/services/toastService"
+import { Municipality } from "@common/types/interfaces"
 
 @customElement('search-form')
 export class SearchForm extends LitElement {

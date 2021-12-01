@@ -1,4 +1,5 @@
 import {selectedMun} from "@app/store/munStore"
+import { Colors, GarbageType, Municipality } from "@common/types/interfaces"
 selectedMun.subscribe(value => mun = value)
 let mun: Municipality
 

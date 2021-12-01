@@ -1,3 +1,5 @@
+import { Language } from "@common/types/interfaces"
+
 let langCode = "no"; //navigator.languages;
 let lang: Language
 

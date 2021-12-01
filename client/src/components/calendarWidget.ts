@@ -5,6 +5,7 @@ import { calendarData } from "@app/store/calendarDataStore"
 import { Subscription } from "rxjs"
 import { MonthDays } from "./monthDays"
 import lang from "@app/services/lang"
+import { CalendarEventsData } from "@common/types/interfaces"
 
 @customElement('calendar-widget')
 export class CalendarWidget extends LitElement {

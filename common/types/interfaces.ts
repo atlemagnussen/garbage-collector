@@ -1,6 +1,6 @@
 
 
-type GarbageType = "food" | "paper" | "rest" | "xmasTree"
+export type GarbageType = "food" | "paper" | "rest" | "xmasTree"
 type SubscribeOperation = "unsubscribed" | "subscribed"
 
 type CalendarDataType = { 
@@ -18,7 +18,7 @@ interface FirebaseDocument {
     _id?: string
 }
 
-interface CalendarData extends CalendarDataType, FirebaseDocument {
+export interface CalendarData extends CalendarDataType, FirebaseDocument {
     hash: string
     year: string
     address: Array<string>
@@ -26,25 +26,25 @@ interface CalendarData extends CalendarDataType, FirebaseDocument {
     title?: string
     isEmpty?: boolean
 }
-interface CalendarEvent {
+export interface CalendarEvent {
     type: GarbageType
     color: string
     date: Date
 }
 
-interface CalendarEventsData {
+export interface CalendarEventsData {
     municipality: string,
     address: string,
     year: number
     garbageEvents: Array<CalendarEvent>
 }
 
-interface BrowserRoute {
+export interface BrowserRoute {
     path: string
     param: string
     action: string
 }
-interface Route {
+export interface Route {
     path: string
     component: string
     title?: string
@@ -55,26 +55,27 @@ interface Route {
     admin?: boolean
     init?: Function
 }
-type Colors = { [k in GarbageType]: string }
-interface Municipality {
+
+export type Colors = { [k in GarbageType]: string }
+export interface Municipality {
     name?: string
     colors?: Colors
 }
 
 
-interface Day {
+export interface Day {
     date: Date
     day: number
     notThisMonth: boolean
 }
 
-interface Week {
+export interface Week {
     days: Array<Day>
 }
 
 type PrevRatio = { [k: string]: number}
 
-type Language = { [k: string]: string}
+export type Language = { [k: string]: string}
 
 interface CalendarSpec {
     municipality: string
@@ -87,7 +88,7 @@ export interface SubscriptionData extends FirebaseDocument{
     created?: Date
     updated?: Date
 }
-interface Subscription {
+export interface Subscription {
     token: string
     municipality: string
     address: string,
@@ -122,7 +123,7 @@ interface CalendarSpecChanged {
     added: CalendarSpec[]
 }
 
-interface Toast {
+export interface Toast {
     type: string
     size: string
     position: string

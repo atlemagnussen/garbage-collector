@@ -1,4 +1,5 @@
 import { SvelteSubject } from "@app/store/reactive"
+import { Route } from "@common/types/interfaces"
 const curRoutePathSubject = new SvelteSubject<string>("")
 export const curRoutePath = curRoutePathSubject.asObservable()
 

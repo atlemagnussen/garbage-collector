@@ -6,6 +6,7 @@ import rest from "@app/services/restService"
 import toast from "@app/services/toastService"
 
 import {setupWb} from "@app/services/swloader"
+import { Subscription } from "@common/types/interfaces"
 class GMessages {
     private vapidPublicKey = ""
     private currentToken = ""

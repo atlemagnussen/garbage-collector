@@ -1,3 +1,4 @@
+import { BrowserRoute } from "@common/types/interfaces";
 
 class PathBreaker {
     getRoute(p: string): BrowserRoute {

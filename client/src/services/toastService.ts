@@ -1,5 +1,7 @@
 import toastStore from "@app/store/toastStore"
-import type { MessagePayload } from "@firebase/messaging";
+import { Toast } from "@common/types/interfaces"
+import type { MessagePayload } from "@firebase/messaging"
+
 class ToastService {
     info(msg: string) {
         const toast: Toast = {

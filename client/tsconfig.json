@@ -16,7 +16,6 @@
         "checkJs": true,
         "sourceMap": true,
         "inlineSources": true,
-        "outDir": "./dist",
         "removeComments": true,
         "strict": true,
         "experimentalDecorators": true,

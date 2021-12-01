@@ -4,6 +4,7 @@ import {customElement} from "lit/decorators.js"
 import {ifDefined} from "lit/directives/if-defined.js"
 import {munStore} from "@app/store/munStore"
 import { Subscription } from "rxjs"
+import { Municipality } from "@common/types/interfaces"
 @customElement('home-view')
 export class HomeView extends LitElement {
     private muns: Array<Municipality> = []

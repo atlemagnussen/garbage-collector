@@ -1,5 +1,6 @@
 import { StoredSubject, SvelteSubject } from "./reactive"
 import data from "@app/services/data"
+import { Municipality } from "@common/types/interfaces"
 
 const munSubject = new StoredSubject<Array<Municipality>>("municipalities", [])
 export const munStore = munSubject.asObservable()

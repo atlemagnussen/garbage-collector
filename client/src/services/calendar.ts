@@ -1,3 +1,5 @@
+import { CalendarEvent } from "@common/types/interfaces"
+
 class CalendarService {
     events: Array<CalendarEvent>
     redDaysConfig: any

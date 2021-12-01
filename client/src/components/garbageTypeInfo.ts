@@ -1,6 +1,7 @@
 import {LitElement, html, css} from "lit"
 import {customElement, property} from "lit/decorators.js"
 import {getColor} from "@app/services/colorService"
+import { GarbageType } from "@common/types/interfaces"
 
 @customElement('garbage-type-info')
 export class GarbageTypeInfp extends LitElement {

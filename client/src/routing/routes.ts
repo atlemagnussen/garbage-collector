@@ -1,4 +1,4 @@
-
+import { Route } from "@common/types/interfaces"
 
 const routes: Route[] =  [
     {

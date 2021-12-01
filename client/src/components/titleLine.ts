@@ -7,6 +7,7 @@ import type { Subscription } from "rxjs"
 import messaging from "@app/services/messaging"
 import { selectedMun } from "@app/store/munStore"
 import { observe } from "@app/directives/ObservableDirective"
+import { Municipality } from "@common/types/interfaces"
 
 @customElement('title-line')
 export class TitleLine extends LitElement {

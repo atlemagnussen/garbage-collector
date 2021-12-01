@@ -5,6 +5,7 @@ import pathBreaker from "@app/funcs/pathBreaker"
 import {getMuns, setSelectedMun} from "@app/store/munStore"
 import {curRoutePath, setCurRoute} from "@app/routing/router"
 import {setAddress} from "@app/store/addressStore"
+import { Route } from "@common/types/interfaces"
 
 const findRoute = async (fullpath: string): Promise<Route> => {
     const bRoute = pathBreaker.getRoute(fullpath)

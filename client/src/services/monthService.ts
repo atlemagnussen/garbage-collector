@@ -1,3 +1,5 @@
+import { Week } from "@common/types/interfaces"
+
 export const getMonthWeeks = (year: number, month: number) => {
     let weeks: Week[] = []
     let week: Week = {days: []}

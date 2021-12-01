@@ -19,10 +19,10 @@
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.8",
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@surma/rollup-plugin-off-main-thread": "^2.2.2",
     "@types/lodash-es": "^4.17.4",
     "@web/rollup-plugin-html": "^1.10.1",
@@ -36,7 +36,7 @@
     "rollup-plugin-workbox": "^6.2.0",
     "serve": "^12.0.1",
     "snowpack": "^3.8.8",
-    "typescript": "^4.4.3"
+    "typescript": "^4.5.2"
   },
   "dependencies": {
     "firebase": "^9.0.2",
