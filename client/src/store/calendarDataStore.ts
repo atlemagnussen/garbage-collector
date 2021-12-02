@@ -6,14 +6,15 @@ import data from "@app/services/data"
 import user from "@app/services/user"
 import { CalendarEventsData, GarbageType, Municipality } from "@common/types/interfaces"
 import { BehaviorSubject } from "rxjs"
-import { map, mergeWith } from "rxjs/operators"
 import { cloneDeep } from "lodash-es"
+import { hash256 } from "@app/funcs/helpers"
 
 const calendarSubject = new SvelteSubject<CalendarEventsData>({
     year: 0,
     municipality: "",
     address: "",
-    garbageEvents: []
+    garbageEvents: [],
+    hash: ""
 })
 export const calendarData = calendarSubject.asObservable()
 
@@ -31,8 +32,13 @@ const isBothSet = async () => {
 const getData = async () => {
     const a = address.split("-").join(" ")
     const d = await data.getCalendar(mun.name as string, a)
-    calendarSubject.next(d)
-    console.log(d)
+    if (d) {
+        const data = d!
+        const str = JSON.stringify(data)
+        const hash = await hash256(str)
+        data.hash = hash
+        calendarSubject.next(data)
+    }
 }
 
 selectedMun.subscribe(value => {
@@ -51,7 +57,7 @@ export const getEventsForDate = (date: Date) => {
     const m = date.getMonth()
     const d = date.getDate()
     const dutc = new Date(Date.UTC(y, m, d))
-    const data = calendarSubject.get()
+    const data = calendarDataFiltered.getValue()
     const events = data.garbageEvents.filter(e => e.date.getTime() == dutc.getTime())
     return events
 }
@@ -60,7 +66,7 @@ const isSubscribingToCurrentCalendar = new SvelteSubject<boolean>(false)
 export const isSubscribing = isSubscribingToCurrentCalendar.asObservable()
 
 export const allGarbageTypes: GarbageType[] = ["rest", "food", "paper", "xmasTree"]
-const GarbageTypeFilterSubject = new BehaviorSubject<GarbageType[]>([])
+const GarbageTypeFilterSubject = new BehaviorSubject<GarbageType[]>(allGarbageTypes)
 export const garbageTypeFilter = GarbageTypeFilterSubject.asObservable()
 export const toggleGarbageTypeFilter = (type: GarbageType) => {
     const current = GarbageTypeFilterSubject.getValue()
@@ -78,18 +84,22 @@ export const calendarDataFiltered = new BehaviorSubject<CalendarEventsData>({
     year: 0,
     municipality: "",
     address: "",
-    garbageEvents: []
+    garbageEvents: [],
+    hash: ""
 })
 
-const createFiltered = () => {
+const createFiltered = async () => {
     const data = calendarSubject.getValue()
     const dataClone = cloneDeep(data)
     const filter = GarbageTypeFilterSubject.getValue()
     if (!filter || filter.length === 0)
-        return dataClone
+        calendarDataFiltered.next(dataClone)
 
     const filtered = dataClone.garbageEvents.filter(e => filter.includes(e.type))
     dataClone.garbageEvents = filtered
+    const str = JSON.stringify(dataClone)
+    const hash = await hash256(str)
+    dataClone.hash = hash
     calendarDataFiltered.next(dataClone)
 }
 

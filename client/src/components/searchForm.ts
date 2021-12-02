@@ -55,8 +55,8 @@ export class SearchForm extends LitElement {
         super.disconnectedCallback()
         this.subs.map(s => s.unsubscribe)
     }
-    onKeyUp(e: KeyboardEvent) {
-        if (e.key == "13") {
+    onKeyDown(e: KeyboardEvent) {
+        if (e.key == "Enter") {
             e.preventDefault();
             this.search();
         }
@@ -92,7 +92,7 @@ export class SearchForm extends LitElement {
                 <input type="search" class="search" placeholder="søk" 
                     id="inputSearchAddress" name="searchaddress"
                     autofocus autocomplete="street-address"
-                    @keyup=${this.onKeyUp}>
+                    @keydown=${this.onKeyDown}>
                 </input>
                 <button @click=${this.onClick}>Søk</button>
                 <span id="msg"></span>

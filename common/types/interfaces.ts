@@ -37,6 +37,7 @@ export interface CalendarEventsData {
     address: string,
     year: number
     garbageEvents: Array<CalendarEvent>
+    hash: string
 }
 
 export interface BrowserRoute {
@@ -67,6 +68,10 @@ export interface Day {
     date: Date
     day: number
     notThisMonth: boolean
+}
+
+export interface DayEvents extends Day {
+    events?: CalendarEvent[]
 }
 
 export interface Week {

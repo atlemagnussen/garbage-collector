@@ -1,6 +1,8 @@
 import {LitElement, html, css} from "lit"
 import {customElement, property} from "lit/decorators.js"
 import { getMonthWeeks } from "@app/services/monthService"
+import {getEventsForDate} from "@app/store/calendarDataStore"
+import { DayEvents } from "@common/types/interfaces"
 @customElement('month-days')
 export class MonthDays extends LitElement {
     
@@ -70,6 +72,9 @@ export class MonthDays extends LitElement {
     @property({attribute: false})
     month: number
 
+    @property({attribute: true})
+    hash: string = ""
+    
     constructor() {
         super()
         this.month = 0
@@ -89,8 +94,11 @@ export class MonthDays extends LitElement {
                 return html`
                     <div class="week">
                         ${w.days.map(d => {
+                            const events = getEventsForDate(d.date)
+                            const dayEvents = d as DayEvents
+                            dayEvents.events = events
                             return html`
-                                <calendar-day .day=${d}></calendar-day>
+                                <calendar-day .day=${dayEvents}></calendar-day>
                             `
                         })}
                     </div>

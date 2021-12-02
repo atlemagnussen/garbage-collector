@@ -5,14 +5,14 @@ import { calendarDataFiltered } from "@app/store/calendarDataStore"
 import { Subscription } from "rxjs"
 import { MonthDays } from "./monthDays"
 import lang from "@app/services/lang"
-import { CalendarEventsData } from "@common/types/interfaces"
+import type { CalendarEventsData } from "@common/types/interfaces"
 
 @customElement('calendar-widget')
 export class CalendarWidget extends LitElement {
     private observer: IntersectionObserver | null = null
     private months: Array<number> = [0,1,2,3,4,5,6,7,8,9,10,11]
     private sub = Subscription.EMPTY
-    private data: CalendarEventsData = {year: 0, garbageEvents: [], municipality: "", address: ""}
+    private data: CalendarEventsData = {year: 0, garbageEvents: [], municipality: "", address: "", hash: ""}
     private daysView: Ref<HTMLInputElement> = createRef();
     private monthLabel = ""
     private doScroll = false
@@ -236,7 +236,7 @@ export class CalendarWidget extends LitElement {
                 const calendar = html`
                     <div class="days-view" ${ref(this.daysView)}>
                         ${this.months.map(m => {
-                            return html`<month-days .year=${this.data.year} .month=${m}></month-days>`
+                            return html`<month-days .year=${this.data.year} .month=${m} hash=${this.data.hash}></month-days>`
                         })}
                         
                     }

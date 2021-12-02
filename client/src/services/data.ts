@@ -86,13 +86,13 @@ class Data {
         return data
     }
 
-    async getCalendar(municipality: string, address: string) {
+    async getCalendar(municipality: string, address: string): Promise<CalendarEventsData | null> {
         const data = await this.getCalendarRawData(municipality, address)
         if (data) {
             const transformed = this.transformDataForCalendar(data, municipality, address)
             return transformed
         }
-        return data
+        return null
     }
 
     transformDataForCalendar(d: CalendarData, municipality: string, address: string): CalendarEventsData {
@@ -122,7 +122,7 @@ class Data {
             .concat(paperEvents)
             .concat(xmasTreeEvents)
         
-        return {year, garbageEvents, municipality, address}
+        return {year, garbageEvents, municipality, address, hash: ""}
     }
 
     createEvents(year:string, arr:Array<string>, type: GarbageType, color:string) {

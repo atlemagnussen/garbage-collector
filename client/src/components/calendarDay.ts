@@ -1,10 +1,9 @@
 import {LitElement, html, css} from "lit"
 import {customElement, property} from "lit/decorators.js"
 import { classMap } from "lit/directives/class-map.js"
-import {getEventsForDate} from "@app/store/calendarDataStore"
 import {getColor} from "@app/services/colorService"
 import {formatterNoDateOnly} from "@app/services/dateTime"
-import { Day } from "@common/types/interfaces"
+import { DayEvents } from "@common/types/interfaces"
 @customElement('calendar-day')
 export class CalendarDay extends LitElement {
     private today = new Date
@@ -54,7 +53,7 @@ export class CalendarDay extends LitElement {
         }
     `
     @property({attribute: false})
-    day: Day
+    day: DayEvents
 
     constructor() {
         super()
@@ -68,7 +67,6 @@ export class CalendarDay extends LitElement {
     render() {
         const iftoday = this.ifToday(this.day.date)
         const dayClasses = { date: true, notthismonth: this.day.notThisMonth, iftoday}
-        const events = getEventsForDate(this.day.date)
         const dateFormatted = formatterNoDateOnly.format(this.day.date)
     
         this.setAttribute("title", dateFormatted)
@@ -77,7 +75,7 @@ export class CalendarDay extends LitElement {
                 ${this.day.day}
             </div>
             <div class="events">
-                ${events.map(e => {
+                ${this.day.events?.map(e => {
                     const id = `${e.type}-icon`
                     const href = `icons.svg#${id}`
                     const color = getColor(e.type)
