@@ -66,7 +66,7 @@ const isSubscribingToCurrentCalendar = new SvelteSubject<boolean>(false)
 export const isSubscribing = isSubscribingToCurrentCalendar.asObservable()
 
 export const allGarbageTypes: GarbageType[] = ["rest", "food", "paper", "xmasTree"]
-const GarbageTypeFilterSubject = new BehaviorSubject<GarbageType[]>(allGarbageTypes)
+const GarbageTypeFilterSubject = new BehaviorSubject<GarbageType[]>([])
 export const garbageTypeFilter = GarbageTypeFilterSubject.asObservable()
 export const toggleGarbageTypeFilter = (type: GarbageType) => {
     const current = GarbageTypeFilterSubject.getValue()
@@ -92,8 +92,10 @@ const createFiltered = async () => {
     const data = calendarSubject.getValue()
     const dataClone = cloneDeep(data)
     const filter = GarbageTypeFilterSubject.getValue()
-    if (!filter || filter.length === 0)
+    if (!filter || filter.length === 0) {
         calendarDataFiltered.next(dataClone)
+        return
+    }
 
     const filtered = dataClone.garbageEvents.filter(e => filter.includes(e.type))
     dataClone.garbageEvents = filtered
