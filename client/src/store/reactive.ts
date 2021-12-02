@@ -57,5 +57,5 @@ export class TogglableSubject extends SvelteSubject<boolean> {
 }
 
 export const clonedObservable = <T>(subject: BehaviorSubject<T>): Observable<T> => {
-    return subject.pipe(map(data => cloneDeep(data)));
+    return subject.pipe(map(data => cloneDeep(data)))
 }

@@ -4,7 +4,10 @@ import { selectedMun } from "./munStore"
 import { subs } from "@app/services/user"
 import data from "@app/services/data"
 import user from "@app/services/user"
-import { CalendarEventsData, Municipality } from "@common/types/interfaces"
+import { CalendarEventsData, GarbageType, Municipality } from "@common/types/interfaces"
+import { BehaviorSubject } from "rxjs"
+import { map, mergeWith } from "rxjs/operators"
+import { cloneDeep } from "lodash-es"
 
 const calendarSubject = new SvelteSubject<CalendarEventsData>({
     year: 0,
@@ -55,3 +58,40 @@ export const getEventsForDate = (date: Date) => {
 
 const isSubscribingToCurrentCalendar = new SvelteSubject<boolean>(false)
 export const isSubscribing = isSubscribingToCurrentCalendar.asObservable()
+
+export const allGarbageTypes: GarbageType[] = ["rest", "food", "paper", "xmasTree"]
+const GarbageTypeFilterSubject = new BehaviorSubject<GarbageType[]>([])
+export const garbageTypeFilter = GarbageTypeFilterSubject.asObservable()
+export const toggleGarbageTypeFilter = (type: GarbageType) => {
+    const current = GarbageTypeFilterSubject.getValue()
+    const isTypeFiltered = current.find(t => t == type)
+    if (isTypeFiltered) {
+        const filter = current.filter(t => t !== type)
+        GarbageTypeFilterSubject.next(filter)
+    } else {
+        current.push(type)
+        GarbageTypeFilterSubject.next(current)
+    }
+}
+
+export const calendarDataFiltered = new BehaviorSubject<CalendarEventsData>({
+    year: 0,
+    municipality: "",
+    address: "",
+    garbageEvents: []
+})
+
+const createFiltered = () => {
+    const data = calendarSubject.getValue()
+    const dataClone = cloneDeep(data)
+    const filter = GarbageTypeFilterSubject.getValue()
+    if (!filter || filter.length === 0)
+        return dataClone
+
+    const filtered = dataClone.garbageEvents.filter(e => filter.includes(e.type))
+    dataClone.garbageEvents = filtered
+    calendarDataFiltered.next(dataClone)
+}
+
+calendarData.subscribe(d => createFiltered())
+garbageTypeFilter.subscribe(f => createFiltered())

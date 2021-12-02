@@ -12,11 +12,13 @@ export class MainAppComponent extends LitElement {
         super()
         this.init()
     }
+
     async init() {
         await langInit()
         this.initialized = true
         this.requestUpdate()
     }
+    
     protected createRenderRoot() {
        return this
     }
@@ -54,6 +56,6 @@ export class MainAppComponent extends LitElement {
             <aside></aside>
             <toast-messages></toast-messages>
         </main>
-        `;
+        `
     }
 }

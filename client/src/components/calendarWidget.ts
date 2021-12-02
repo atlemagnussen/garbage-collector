@@ -1,7 +1,7 @@
 import {LitElement, html, css} from "lit"
 import {customElement, property} from "lit/decorators.js"
 import {ref, createRef, Ref} from "lit/directives/ref.js"
-import { calendarData } from "@app/store/calendarDataStore"
+import { calendarDataFiltered } from "@app/store/calendarDataStore"
 import { Subscription } from "rxjs"
 import { MonthDays } from "./monthDays"
 import lang from "@app/services/lang"
@@ -161,7 +161,7 @@ export class CalendarWidget extends LitElement {
 
     connectedCallback() {
         super.connectedCallback()
-        this.sub = calendarData.subscribe(value => {
+        this.sub = calendarDataFiltered.subscribe(value => {
             this.data = value
             this.doScroll = true
             this.requestUpdate()
