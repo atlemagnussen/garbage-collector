@@ -5,6 +5,9 @@ import {clientsClaim} from "workbox-core"
 import {precacheAndRoute,createHandlerBoundToURL} from "workbox-precaching"
 import {registerRoute, NavigationRoute} from "workbox-routing"
 import type { FirebaseCloudMessageData } from "@common/types/interfaces"
+import {formatNoShortDate} from "@app/funcs/dateFormatting"
+
+
 clientsClaim()
 
 precacheAndRoute(self.__WB_MANIFEST)
@@ -35,8 +38,10 @@ if (firebaseApp) {
             if (data.type) {
                 if (data.type.includes("subscr"))
                     title = data.type
-                else
-                    title = `${data.date}, ${data.type}`
+                else {
+                    const dateFormatted = formatNoShortDate(data.date)
+                    title = `${dateFormatted}, ${data.type}`
+                }
             } else if (data.title) {
                 title = data.title;
             }
