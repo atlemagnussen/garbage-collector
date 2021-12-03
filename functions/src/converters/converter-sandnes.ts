@@ -4,6 +4,7 @@ import conf from "./converter"
 const config = conf.sandnes
 import * as puppeteer from "puppeteer"
 import { spacingForHouseLetter } from "./converter-common"
+import { CalendarData, GarbageType, IConverter } from "@common/types/interfaces"
 const baseurl =
     "https://portal.isy.no/sandnes/FinnEiendom/tabid/2331/ctl/PropertySearch/mid/3548/mid/3548/Default.aspx";
 

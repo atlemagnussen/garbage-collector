@@ -8,13 +8,13 @@ type CalendarDataType = {
 }
 
 type FirebaseOps = "createOrUpdate" | "delete"
-interface FirebaseOperation {
+export interface FirebaseOperation {
     operation: FirebaseOps
     success: boolean
     id?: string
 }
 
-interface FirebaseDocument {
+export interface FirebaseDocument {
     _id?: string
 }
 
@@ -78,11 +78,9 @@ export interface Week {
     days: Array<Day>
 }
 
-type PrevRatio = { [k: string]: number}
-
 export type Language = { [k: string]: string}
 
-interface CalendarSpec {
+export interface CalendarSpec {
     municipality: string
     address: string
 }
@@ -109,21 +107,21 @@ export interface FirebaseCloudMessageData extends FirebaseDataCompat{
     address: string
     id: string
 }
-interface FirebaseCloudMessage {
+export interface FirebaseCloudMessage {
     data: FirebaseCloudMessageData
     token: string
 }
 
-interface TokenChange {
+export interface TokenChange {
     old: string
     now: string
 }
-interface SubscriptionChanges {
+export interface SubscriptionChanges {
     token: boolean | TokenChange
     calendars: boolean | CalendarSpecChanged
 }
 
-interface CalendarSpecChanged {
+export interface CalendarSpecChanged {
     removed: CalendarSpec[]
     added: CalendarSpec[]
 }
@@ -137,22 +135,22 @@ export interface Toast {
 }
 
 
-interface TypeDate {
+export interface TypeDate {
     type: GarbageType
     date: Date
 }
 
-interface IConverter {
+export interface IConverter {
     get(addressInput: string): Promise<CalendarData>
 }
 
-interface FirebaseSentMessages {
+export interface FirebaseSentMessages {
     count: number
     success: boolean
     fcms: string[]
 }
 
 
-interface MunicipalityRespons extends FirebaseDocument {
+export interface MunicipalityRespons extends FirebaseDocument {
     result: string
 }

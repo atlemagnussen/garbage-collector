@@ -3,6 +3,7 @@ import httpHandler from "./httpHandler"
 import config from "./converter"
 import * as puppeteer from "puppeteer"
 import { spacingForHouseLetter } from "./converter-common"
+import { CalendarData, GarbageType, IConverter } from "@common/types/interfaces"
 
 const baseUrl =
     "https://portal.isy.no/stavanger/S%C3%B8keiendom/tabid/798/ctl/PropertySearch/mid/2773/mid/2773/Default.aspx";

@@ -1,3 +1,4 @@
+import { Subscription } from "@common/types/interfaces"
 import firestore, {FirestoreTimeStamp} from "./helpers/firestore"
 import msgHelper from "./helpers/messagingHelper"
 const SUBCOLNAME = "subscription"

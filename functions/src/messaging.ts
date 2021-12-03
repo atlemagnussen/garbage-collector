@@ -3,6 +3,7 @@ import helper from "./helpers/messagingHelper"
 import subHelper from "./helpers/subscriptionHelper"
 import * as functions from "firebase-functions"
 import { SubscriptionMessage } from "@common/types/firebasetypes";
+import { CalendarSpecChanged, FirebaseCloudMessage, FirebaseSentMessages, SubscriptionData } from "@common/types/interfaces"
  
 /*
     Check for due messages and Send
@@ -117,10 +118,12 @@ export const createdSub = async (snapshot: functions.firestore.QueryDocumentSnap
     const token = newSubscription.token
     const calendars = newSubscription.calendars
     console.log(JSON.stringify(calendars))
-    calendars.forEach(async (cal) => {
-        await helper.addMessage(subId, token!, cal)
-    })
-    console.log(JSON.stringify(calendars))
+    console.log("START adding messages for subscription")
+    for (let i = 0; i < calendars.length; i++) {
+        const calendar = calendars[i]
+        await helper.addMessage(subId, token!, calendar)
+    }
+    console.log("END adding messages for subscription")
     return true
 }
 

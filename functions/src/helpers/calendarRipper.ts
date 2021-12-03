@@ -3,6 +3,7 @@ import converterSandnes from "../converters/converter-sandnes"
 import firestore from "./firestore"
 const db = firestore.getDb()
 import comparer from "./comparer"
+import { CalendarData, IConverter } from "@common/types/interfaces"
 
 class Data {
     async getAndStore(municipality: string, address: string, y?: string) {

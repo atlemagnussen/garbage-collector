@@ -1,4 +1,5 @@
 import "firebase-admin"
+import { GarbageType } from "./interfaces"
 
 export type FirebaseTimeStampOrDate = FirebaseFirestore.Timestamp | Date
 

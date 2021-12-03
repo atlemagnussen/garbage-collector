@@ -1,3 +1,4 @@
+import { FirebaseDocument, FirebaseOperation } from "@common/types/interfaces"
 import admin from "./admin"
 const db = admin.firestore()
 

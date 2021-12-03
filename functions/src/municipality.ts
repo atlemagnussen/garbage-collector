@@ -2,6 +2,7 @@ import firestore from "./helpers/firestore"
 import * as functions from "firebase-functions"
 const db = firestore.getDb()
 import escapeHtml from "escape-html"
+import { Municipality, MunicipalityRespons } from "@common/types/interfaces"
 
 export const getMuns = async (req: functions.https.Request, res: functions.Response<any>) => {
     res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')

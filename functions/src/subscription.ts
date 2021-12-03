@@ -1,6 +1,7 @@
 import admin from "./helpers/admin"
 import * as functions from "firebase-functions"
 import helper from "./helpers/subscriptionHelper"
+import { FirebaseCloudMessage } from "@common/types/interfaces"
 
 const cors = (res: functions.Response<any>) => {
     res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')

@@ -1,3 +1,4 @@
+import { CalendarData, GarbageType, TypeDate } from "@common/types/interfaces"
 import firestoreCrud from "./firestore"
 
 const db = firestoreCrud.getDb()
