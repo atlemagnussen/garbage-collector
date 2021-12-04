@@ -13,6 +13,7 @@
   "author": "atlemagnussen",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^16.11.11",
     "firebase-admin": "^10.0.0"
   }
 }
