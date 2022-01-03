@@ -6,6 +6,11 @@ const baseUrl = "https://www.stavanger.kommune.no/renovasjon-og-miljo/tommekalen
 //const containerSelector = ".row.waste-calendar-search-block"
 const inputSelector = "input.js-address-search"
 const searcBtnSelector = "input.js-address-search-submit" //[type='submit'] 
+const resultSelector = ".js-address-result"
+const resultListSelector = `${resultSelector} ul li`
+
+const calendarListSelector = "table.waste-calendar.js-waste-calendar"
+const calendarTablesRowsSelector = `${calendarListSelector} tbody tr.waste-calendar__item`
 class ConverterSvg implements IConverter {
     address = ""
     constructor(addressInput: string) {
@@ -34,9 +39,31 @@ class ConverterSvg implements IConverter {
         //await page.waitForSelector(searcBtnSelector)
         await page.click(searcBtnSelector)
         console.log("search btn clicked")
-        const resultSelector = ".js-address-result"
-        await page.waitForSelector(resultSelector)
+        
+        await page.waitForSelector(resultListSelector)
         console.log("got search result")
+
+        let urls = await page.$$eval(resultListSelector, links => {
+            const ahrefs = links.map(el => el.querySelector("a")!.href)
+            return ahrefs
+        })
+
+        if (!urls || urls.length === 0)
+            throw new Error("got no urls")
+        
+        const url = urls[0]
+        console.log(`go to url ${url}`)
+        await page.goto(url)
+        await page.waitForSelector(calendarListSelector)
+
+        let datesRows = await page.$$eval(calendarTablesRowsSelector, rows => {
+            return rows
+        })
+
+        if (!datesRows)
+            throw new Error("got no dates tables")
+        
+        console.log(`dates tables count = ${datesRows.length}`)
         let data: CalendarData = {
             hash: "",
             year: "",
