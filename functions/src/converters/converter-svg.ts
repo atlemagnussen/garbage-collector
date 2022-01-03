@@ -14,7 +14,7 @@ const calendarTablesRowsSelector = `${calendarListSelector} tbody tr.waste-calen
 
 interface SvgCalRow {
     date: string
-    icon: string
+    icons: string[]
 }
 
 class ConverterSvg implements IConverter {
@@ -67,11 +67,11 @@ class ConverterSvg implements IConverter {
                 const tds = r.querySelectorAll("td")
                 const dateTd = tds[0]
                 const iconTd = tds[1]
-                const iconImg = iconTd.querySelector("img")
+                const iconImgs = iconTd.querySelectorAll("img")
 
                 const ret: SvgCalRow = {
                     date: dateTd.innerText.trim(),
-                    icon: iconImg!.src
+                    icons: Array.from(iconImgs).map(ic => ic!.src)
                 }
                 return ret
             })
@@ -80,6 +80,7 @@ class ConverterSvg implements IConverter {
         if (!datesRows)
             throw new Error("got no dates tables")
         
+        console.log(datesRows)
         console.log(`dates tables count = ${datesRows.length}`)
         const data = this.convert(datesRows)
         return data
@@ -105,13 +106,13 @@ class ConverterSvg implements IConverter {
             const day = parseInt(dateSplit[0])
             const month = parseInt(dateSplit[1]) -1
             const newDate = `${month}-${day}}`
-            if (row.icon.includes("rest"))
+            if (row.icons.some(ic => ic.includes("rest")))
                 data.rest.push(newDate)
-            else if (row.icon.includes("bio"))
+            if (row.icons.some(ic => ic.includes("bio")))
                 data.food.push(newDate)
-            else if (row.icon.includes("papir"))
+            if (row.icons.some(ic => ic.includes("rest")))
                 data.paper.push(newDate)
-            else
+            if (row.icons.some(ic => ic.includes("juletre")))
                 data.xmasTree.push(newDate)
         }
         return data
