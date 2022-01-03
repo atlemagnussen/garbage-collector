@@ -1,7 +1,8 @@
 import ConverterSvg from "./converters/converter-svg"
 
 const run = async () => {
-    const res = await ConverterSvg.get("morgedalsveien 66")
+    const conv = new ConverterSvg("morgedalsveien 66")
+    const res = await conv.get()
     console.log(res)
 }
 

@@ -11,7 +11,8 @@
         "start": "npm run shell",
         "deploy": "firebase deploy --only functions",
         "logs": "firebase functions:log",
-        "build": "tsc"
+        "build": "tsc",
+        "test": "node ./lib/functions/src/testConverterSvg.js"
     },
     "dependencies": {
         "@types/puppeteer": "^5.4.4",

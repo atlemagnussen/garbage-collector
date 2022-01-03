@@ -90,7 +90,7 @@ class Data {
         const addressLowerCase = address.toLowerCase()
 
         try {
-            const converter = this.getConverter(municipality)
+            const converter = this.getConverter(municipality, address)
             const convertData = await converter?.get(addressLowerCase)
             if (convertData && !convertData.isEmpty) {
                 return convertData
@@ -101,10 +101,10 @@ class Data {
         }
         return null
     }
-    getConverter(municipality: string): IConverter | null {
+    getConverter(municipality: string, address: string): IConverter | null {
         switch (municipality) {
             case "stavanger":
-                return converterSvg
+                return new converterSvg(address)
             case "sandnes":
                 return converterSandnes
             default:
