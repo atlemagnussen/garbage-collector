@@ -11,6 +11,12 @@ const resultListSelector = `${resultSelector} ul li`
 
 const calendarListSelector = "table.waste-calendar.js-waste-calendar"
 const calendarTablesRowsSelector = `${calendarListSelector} tbody tr.waste-calendar__item`
+
+interface SvgCalRow {
+    date: string
+    icon: string
+}
+
 class ConverterSvg implements IConverter {
     address = ""
     constructor(addressInput: string) {
@@ -57,13 +63,30 @@ class ConverterSvg implements IConverter {
         await page.waitForSelector(calendarListSelector)
 
         let datesRows = await page.$$eval(calendarTablesRowsSelector, rows => {
-            return rows
+            return rows.map(r => {
+                const tds = r.querySelectorAll("td")
+                const dateTd = tds[0]
+                const iconTd = tds[1]
+                const iconImg = iconTd.querySelector("img")
+
+                const ret: SvgCalRow = {
+                    date: dateTd.innerText.trim(),
+                    icon: iconImg!.src
+                }
+                return ret
+            })
         })
 
         if (!datesRows)
             throw new Error("got no dates tables")
         
         console.log(`dates tables count = ${datesRows.length}`)
+        const data = this.convert(datesRows)
+        return data
+    }
+
+    convert(rows: SvgCalRow[]) {
+        
         let data: CalendarData = {
             hash: "",
             year: "",
@@ -73,6 +96,22 @@ class ConverterSvg implements IConverter {
             rest: [],
             xmasTree: []
         }
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i]
+            const date = row.date.substring(0, 4)
+            const dateSplit = date.split(".")
+            const day = parseInt(dateSplit[0])
+            const month = parseInt(dateSplit[1]) -1
+            const newDate = `${month}-${day}}`
+            if (row.icon.includes("rest"))
+                data.rest.push(newDate)
+            else if (row.icon.includes("bio"))
+                data.food.push(newDate)
+            else if (row.icon.includes("papir"))
+                data.paper.push(newDate)
+            else
+                data.xmasTree.push(newDate)
+        }
         return data
     }
     async startBrowser() {
@@ -80,7 +119,7 @@ class ConverterSvg implements IConverter {
         try {
             console.log("Opening the browser......")
             browser  = await puppeteer.launch({
-                headless: false,
+                headless: true,
                 args: ["--disable-setuid-sandbox"],
                 'ignoreHTTPSErrors': true
             })
