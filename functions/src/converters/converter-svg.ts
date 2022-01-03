@@ -98,7 +98,8 @@ class ConverterSvg implements IConverter {
         }
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i]
-            const date = row.date.substring(0, 4)
+            const date = row.date.substring(0, 5)
+            console.log(`date=${date}`)
             const dateSplit = date.split(".")
             const day = parseInt(dateSplit[0])
             const month = parseInt(dateSplit[1]) -1
