@@ -110,7 +110,7 @@ class ConverterSvg implements IConverter {
                 data.rest.push(newDate)
             if (row.icons.some(ic => ic.includes("bio")))
                 data.food.push(newDate)
-            if (row.icons.some(ic => ic.includes("rest")))
+            if (row.icons.some(ic => ic.includes("papir")))
                 data.paper.push(newDate)
             if (row.icons.some(ic => ic.includes("juletre")))
                 data.xmasTree.push(newDate)
