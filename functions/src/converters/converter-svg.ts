@@ -89,17 +89,18 @@ class ConverterSvg implements IConverter {
         
         let data: CalendarData = {
             hash: "",
-            year: "",
+            year: new Date().getFullYear().toString(),
             address: [this.address],
             food: [],
             paper: [],
             rest: [],
-            xmasTree: []
+            xmasTree: [],
+            isEmpty: false
         }
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i]
             const date = row.date.substring(0, 5)
-            console.log(`date=${date}`)
+            //console.log(`date=${date}`)
             const dateSplit = date.split(".")
             const day = parseInt(dateSplit[0])
             const month = parseInt(dateSplit[1]) -1

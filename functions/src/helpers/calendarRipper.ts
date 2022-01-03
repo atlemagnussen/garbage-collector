@@ -92,6 +92,7 @@ class Data {
         try {
             const converter = this.getConverter(municipality, address)
             const convertData = await converter?.get(addressLowerCase)
+            console.log(`Got converted data for ${convertData?.year}, address=${convertData?.address[0]}, rest.length=${convertData?.rest.length}`)
             if (convertData && !convertData.isEmpty) {
                 return convertData
             }

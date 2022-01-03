@@ -10,14 +10,15 @@
         "shell": "firebase functions:shell",
         "start": "npm run shell",
         "deploy": "firebase deploy --only functions",
+        "deploy:getCalendar": "firebase deploy --only functions:getCalendar",
         "logs": "firebase functions:log",
         "build": "tsc",
         "test": "npm run build && node ./lib/functions/src/testConverterSvg.js"
     },
     "dependencies": {
         "@types/puppeteer": "^5.4.4",
-        "cheerio": "^1.0.0-rc.3",
         "firebase-admin": "^10.0.0",
+        "cheerio": "^1.0.0-rc.3",
         "firebase-functions": "^3.16.0",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21",
