@@ -18,7 +18,6 @@
     "dependencies": {
         "@types/puppeteer": "^5.4.4",
         "firebase-admin": "^10.0.0",
-        "cheerio": "^1.0.0-rc.3",
         "firebase-functions": "^3.16.0",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21",
