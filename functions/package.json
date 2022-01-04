@@ -13,7 +13,7 @@
         "deploy:getCalendar": "firebase deploy --only functions:getCalendar",
         "logs": "firebase functions:log",
         "build": "tsc",
-        "test": "npm run build && node ./lib/functions/src/testConverterSvg.js"
+        "test": "npm run build && node ./lib/functions/src/testConverterSandnes.js"
     },
     "dependencies": {
         "@types/puppeteer": "^5.4.4",

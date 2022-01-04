@@ -1,15 +1,15 @@
 import cheerio from "cheerio"
 import httpHandler from "./httpHandler"
-import config from "./converter"
-import * as pupp from "puppeteer"
-//@ts-ignore
-const puppeteer = pupp.default
+import conf from "./converter"
+const config = conf.sandnes
+import puppeteer from "puppeteer"
 import { spacingForHouseLetter } from "./converter-common"
 import { CalendarData, GarbageType, IConverter } from "@common/types/interfaces"
+const baseurl = "https://portal.isy.no/sandnes/FinnEiendom/tabid/2331/ctl/PropertySearch/mid/3548/mid/3548/Default.aspx"
 
-const baseUrl = "https://portal.isy.no/stavanger/S%C3%B8keiendom/tabid/798/ctl/PropertySearch/mid/2773/mid/2773/Default.aspx"
 
-class ConverterSvg implements IConverter {
+class ConverterSandnes implements IConverter {
+    private emptyMonths = 0
     async get(addressInput: string) {
         console.log(`Start converting input:  ${addressInput}`)
         const address = spacingForHouseLetter(addressInput)
@@ -19,9 +19,10 @@ class ConverterSvg implements IConverter {
         let foundUrl = null
         if (foundUrls && Array.isArray(foundUrls) && foundUrls.length > 0) {
             for (let i = 0; i < foundUrls.length; i++) {
-                const urlFound = foundUrls[i]
-                if (urlFound.text === address) {
-                    foundUrl = urlFound.href
+                const url = foundUrls[i]
+                if (url.text.toLowerCase() === address.toLowerCase()) {
+                    foundUrl = url.href
+                    console.log(`foundUrl=${foundUrl}`)
                     break
                 }
             }
@@ -31,17 +32,17 @@ class ConverterSvg implements IConverter {
             const data = this.fetchAndReadData(foundUrl)
             return data
         }
-        throw Error("no data")
+        throw Error("found no data")
     }
     async getUrlForCalendar(address: string) {
-        const inputSelector = "#dnn_ctr2773_ViewEiendomsok_SearchText"
-        const searchBtnSelector = "#dnn_ctr2773_ViewEiendomsok_Search"
-        const searchResultTableSelector = "#dnn_ctr2773_ViewEiendomsok_ResultsGrid"
+        const inputSelector = "#dnn_ctr3548_ViewEiendomsok_SearchText"
+        const searchBtnSelector = "#dnn_ctr3548_ViewEiendomsok_Search"
+        const searchResultTableSelector = "#dnn_ctr3548_ViewEiendomsok_SearchResults"
         // const browser = await puppeteer.launch();
         const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })
         const page = await browser.newPage()
         try {
-            await page.goto(baseUrl)
+            await page.goto(baseurl)
             page.waitForResponse(inputSelector)
             const searchField = await page.$(inputSelector)
             await searchField?.type(address)
@@ -60,7 +61,7 @@ class ConverterSvg implements IConverter {
         return null
     }
     convertAnchors(aTags: Element[]) {
-        return aTags.map((a: any) => ({ href: a.getAttribute("href"), text: a.innerHTML.toLowerCase() }));
+        return aTags.map(a => ({ href: a.getAttribute("href"), text: a.innerHTML.toLowerCase() }))
     }
 
     async fetchAndReadData(url: string) {
@@ -70,62 +71,59 @@ class ConverterSvg implements IConverter {
             paper: [],
             xmasTree: [],
             year: new Date().getFullYear().toString(),
-            hash:"",
+            hash: "",
             address: []
-        };
+        }
+        
         try {
             const html = await httpHandler.getHtmlFromUrl(url)
             const $ = cheerio.load(html)
-
-            const $titleEl = $("#pa_fraksjon_header h2.art-postheader span.Head")
-            if ($titleEl) {
-                outputData.title = $titleEl.text()
-            } else {
-                console.log("No title found")
-            }
-
-            const yearEl = $("#dnn_ctr2773_ViewRenovasjon_DropDownListVisning")
-            if (yearEl) {
-                outputData.year = yearEl.val() as string
-            } else {
-                console.log(`Found no year, default to this year`)
-            }
-
+            this.emptyMonths = 0
             const $monthsEls = $(".pa-calendar-month")
-            if ($monthsEls.length !== 12) {
+            if ($monthsEls.length === 0) {
                 console.log(`$monthsEls.length=${$monthsEls.length}`)
-                console.error("Not 12 months found")
                 outputData.isEmpty = true
                 return outputData
+            } else if ($monthsEls.length !== 12) {
+                console.log(`$monthsEls.length=${$monthsEls.length}`)
+                const nowMonth = new Date().getMonth()
+                if ($monthsEls.length < 12) {
+                    this.emptyMonths = nowMonth
+                    console.log(`$number of initial empty months=${this.emptyMonths}`)
+                }
             }
 
             $monthsEls.each((i, month) => {
                 const $month = cheerio.load(month)
-                const $imgs = $month("img")
-                for (let y = 0; y < $imgs.length; y++) {
-                    const img = $imgs[y]
-
+                const $divs = $month("div")
+                for (let y = 0; y < $divs.length; y++) {
+                    const div = $divs[y]
+                    if (!div.attribs.class) {
+                        // eslint-disable-next-line no-continue
+                        continue
+                    }
                     let dayOfMonth = "0"
                     let type: GarbageType = "xmasTree"
-                    const $parentEl = $(img).parents(".pa-calendar-day")
+                    const $parentEl = $(div).parents(".pa-calendar-day")
                     const $dayEl = $parentEl.children(".dayNumberClass")
                     if ($dayEl) {
                         dayOfMonth = $dayEl.text()
                     }
-                    if (img.attribs.src === config.stavanger.matPic) {
+                    if (div.attribs.class.includes(config.foodClass)) {
                         type = "food"
-                    } else if (img.attribs.src === config.stavanger.restPic) {
+                    } else if (div.attribs.class.includes(config.restClass)) {
                         type = "rest"
-                    } else if (img.attribs.src === config.stavanger.papirPic) {
+                    } else if (div.attribs.class.includes(config.paperClass)) {
                         type = "paper"
                     } else {
-                        console.warn(`Unknown type src:${img.attribs.src}`)
+                        console.warn(`Unknown type src:${div.attribs.src}`)
                     }
+                    const monthNo = i + this.emptyMonths
                     if (dayOfMonth) {
-                        const d = `${i}-${dayOfMonth}`
+                        const d = `${monthNo}-${dayOfMonth}`
                         outputData[type].push(d)
                     } else {
-                        console.warn(`Month='${i}', Type='${type}', but no dayOfMonth='${dayOfMonth}'`)
+                        console.warn(`Month='${monthNo}', Type='${type}', but no dayOfMonth='${dayOfMonth}'`)
                     }
                 }
             })
@@ -136,4 +134,4 @@ class ConverterSvg implements IConverter {
     }
 }
 
-export default new ConverterSvg()
+export default new ConverterSandnes()

@@ -1,138 +1,153 @@
-import cheerio from "cheerio"
-import httpHandler from "./httpHandler"
+import { CalendarData, GarbageType, IConverter } from "@common/types/interfaces"
+import puppeteer from "puppeteer"
 import conf from "./converter"
 const config = conf.sandnes
-import * as puppeteer from "puppeteer"
-import { spacingForHouseLetter } from "./converter-common"
-import { CalendarData, GarbageType, IConverter } from "@common/types/interfaces"
-const baseurl =
-    "https://portal.isy.no/sandnes/FinnEiendom/tabid/2331/ctl/PropertySearch/mid/3548/mid/3548/Default.aspx";
 
+const searchUrl = "https://portal.isy.no/sandnes/FinnEiendom/tabid/2331/ctl/PropertySearch/mid/3548/mid/3548/Default.aspx"
+
+const searchInputSelector = "#dnn_ctr3548_ViewEiendomsok_SearchText"
+const searcBtnSelector = "#dnn_ctr3548_ViewEiendomsok_Search" //[type='submit'] 
+const resultSelector = "#dnn_ctr3548_ViewEiendomsok_SearchResults"
+const resultListSelector = `${resultSelector} table`
+
+const calendarListSelector = "#dnn_ctr3548_ContentPane"
+const calendarTablesSelector = `${calendarListSelector} .pa-calendar-month`
 
 class ConverterSandnes implements IConverter {
-    private emptyMonths = 0
-    async get(addressInput: string) {
-        console.log(`Start converting input:  ${addressInput}`)
-        const address = spacingForHouseLetter(addressInput)
-        console.log(`Start converting address ${address}`)
-        // find url
-        const foundUrls = await this.getUrlForCalendar(address)
-        let foundUrl = null
-        if (foundUrls && Array.isArray(foundUrls) && foundUrls.length > 0) {
-            for (let i = 0; i < foundUrls.length; i++) {
-                const url = foundUrls[i]
-                if (url.text.toLowerCase() === address.toLowerCase()) {
-                    foundUrl = url.href
-                    console.log(`foundUrl=${foundUrl}`)
-                    break
-                }
-            }
-        }
-        if (foundUrl) {
-            console.log(`found url=${foundUrl}`)
-            const data = this.fetchAndReadData(foundUrl)
-            return data
-        }
-        throw Error("found no data")
+    address = ""
+    constructor(addressInput: string) {
+        this.address = addressInput.toLowerCase()
     }
-    async getUrlForCalendar(address: string) {
-        const inputSelector = "#dnn_ctr3548_ViewEiendomsok_SearchText"
-        const searchBtnSelector = "#dnn_ctr3548_ViewEiendomsok_Search"
-        const searchResultTableSelector = "#dnn_ctr3548_ViewEiendomsok_SearchResults"
-        // const browser = await puppeteer.launch();
-        const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })
-        const page = await browser.newPage()
-        try {
-            await page.goto(baseurl)
-            page.waitForResponse(inputSelector)
-            const searchField = await page.$(inputSelector)
-            await searchField?.type(address)
-
-            const searchBtn = await page.$(searchBtnSelector)
-            await searchBtn?.click()
-            await page.waitForResponse(searchResultTableSelector)
-            const searchResult = await page.$(searchResultTableSelector)
-            const hrefs = await searchResult?.$$eval("a[href]", this.convertAnchors)
-            return hrefs
-        } catch (err) {
-            console.error(err)
-        } finally {
-            await browser.close()
-        }
-        return null
-    }
-    convertAnchors(aTags: Element[]) {
-        return aTags.map(a => ({ href: a.getAttribute("href"), text: a.innerHTML.toLowerCase() }))
-    }
-
-    async fetchAndReadData(url: string) {
-        let outputData: CalendarData = {
-            food: [],
-            rest: [],
-            paper: [],
-            xmasTree: [],
-            year: new Date().getFullYear().toString(),
-            hash: "",
-            address: []
-        }
+    async get(): Promise<CalendarData> {
+        console.log(`Get address ${this.address}`)
+        const browser = await this.startBrowser()
+        if (!browser)
+            throw new Error("error opening browser")
         
-        try {
-            const html = await httpHandler.getHtmlFromUrl(url)
-            const $ = cheerio.load(html)
-            this.emptyMonths = 0
-            const $monthsEls = $(".pa-calendar-month")
-            if ($monthsEls.length === 0) {
-                console.log(`$monthsEls.length=${$monthsEls.length}`)
-                outputData.isEmpty = true
-                return outputData
-            } else if ($monthsEls.length !== 12) {
-                console.log(`$monthsEls.length=${$monthsEls.length}`)
-                const nowMonth = new Date().getMonth()
-                if ($monthsEls.length < 12) {
-                    this.emptyMonths = nowMonth
-                    console.log(`$number of initial empty months=${this.emptyMonths}`)
+        let page = await browser.newPage()
+        await page.goto(searchUrl)
+        console.log(`went to search page ${searchUrl}`)
+        
+        await page.waitForSelector(searcBtnSelector)
+        console.log("got searcBtnSelector")
+        // set address as search value
+        await page.$eval(searchInputSelector, (el, val) => (el as HTMLInputElement).value = val as string, this.address)
+        console.log("set search value")
+        await page.click(searcBtnSelector)
+        
+        await page.waitForSelector(resultListSelector)
+        console.log("got search result")
+
+        let urls = await page.$$eval(resultListSelector, links => {
+            const ahrefs = links.map(el => {
+                const anchors = Array.from(el.querySelectorAll("a"))
+                return anchors.map(a => a.href)
+            })
+            return ahrefs.flat(1)
+        })
+
+        if (!urls || urls.length === 0)
+            throw new Error("got no urls")
+        
+        console.log(`Number of URLS:: ${urls.length}`)
+        for (let i = 0; i < urls.length; i++) {
+            let url = urls[i]
+            try {
+                const data = await this.fetchDataFromUrl(page, url)
+                return data
+            }
+            catch(err) {
+                console.log(`URL did not produce ${url}`)
+                console.log(err)
+                console.log("continue")
+                continue
+            }
+        }
+        throw new Error("no search result urls produced data")
+    }
+
+    async fetchDataFromUrl(page: puppeteer.Page, url: string) {
+        console.log(`go to url ${url}`)
+        await page.goto(url)
+        //await page.waitForResponse(url)
+        // await page.waitForResponse(response => response.url() == url && response.status() === 200);
+
+        // await page.waitForSelector(calendarListSelector)
+        await page.waitForSelector(`${calendarTablesSelector} table`)
+        let calendarMonthTables = await page.$$eval(calendarTablesSelector, divs => {
+            return divs.map(div => div.querySelector("table"))
+        })
+
+        if (!calendarMonthTables || calendarMonthTables.length == 0)
+            throw new Error("got no dates tables")
+        
+        console.log(`calendarMonthDivs found: ${calendarMonthTables.length}`)
+        const data = this.convert(calendarMonthTables as HTMLTableElement[])
+        return data
+    }
+    convert(monthDivs: HTMLTableElement[]) {
+        const nowMonth = new Date().getMonth()
+        let data: CalendarData = {
+            hash: "",
+            year: new Date().getFullYear().toString(),
+            address: [this.address],
+            food: [],
+            paper: [],
+            rest: [],
+            xmasTree: [],
+            isEmpty: false
+        }
+        for (let i = 0; i < monthDivs.length; i++) {
+            const monthDiv = monthDivs[i]
+
+            const dayDivs = Array.from(monthDiv.querySelectorAll("div"))
+            for (let y = 0; y < dayDivs.length; y++) {
+                const dayDiv = dayDivs[y]
+                if (dayDiv.classList.length === 0) {
+                    continue
+                }
+                let dayOfMonth = "0"
+                const parentDay = dayDiv.closest(".pa-calendar-day") as HTMLTableCellElement
+                const dayElement = parentDay?.querySelector(".dayNumberClass") as HTMLSpanElement
+                if (dayElement)
+                    dayOfMonth = dayElement.innerText
+                
+                let type: GarbageType = "xmasTree"
+                if (dayDiv.classList.contains(config.foodClass))
+                    type = "food"
+                else if (dayDiv.classList.contains(config.restClass))
+                    type = "rest"
+                else if (dayDiv.classList.contains(config.paperClass))
+                    type = "paper"
+                else
+                    console.warn("Unknown type", dayDiv)
+                
+                const monthNo = i + nowMonth
+                if (dayOfMonth) {
+                    const d = `${monthNo}-${dayOfMonth}`
+                    data[type].push(d)
+                } else {
+                    console.warn(`Month='${monthNo}', Type='${type}', but no dayOfMonth='${dayOfMonth}'`)
                 }
             }
-
-            $monthsEls.each((i, month) => {
-                const $month = cheerio.load(month)
-                const $divs = $month("div")
-                for (let y = 0; y < $divs.length; y++) {
-                    const div = $divs[y]
-                    if (!div.attribs.class) {
-                        // eslint-disable-next-line no-continue
-                        continue
-                    }
-                    let dayOfMonth = "0"
-                    let type: GarbageType = "xmasTree"
-                    const $parentEl = $(div).parents(".pa-calendar-day")
-                    const $dayEl = $parentEl.children(".dayNumberClass")
-                    if ($dayEl) {
-                        dayOfMonth = $dayEl.text()
-                    }
-                    if (div.attribs.class.includes(config.foodClass)) {
-                        type = "food"
-                    } else if (div.attribs.class.includes(config.restClass)) {
-                        type = "rest"
-                    } else if (div.attribs.class.includes(config.paperClass)) {
-                        type = "paper"
-                    } else {
-                        console.warn(`Unknown type src:${div.attribs.src}`)
-                    }
-                    const monthNo = i + this.emptyMonths
-                    if (dayOfMonth) {
-                        const d = `${monthNo}-${dayOfMonth}`
-                        outputData[type].push(d)
-                    } else {
-                        console.warn(`Month='${monthNo}', Type='${type}', but no dayOfMonth='${dayOfMonth}'`)
-                    }
-                }
-            })
-        } catch (e) {
-            console.error(e)
         }
-        return outputData
+        return data
+    }
+    async startBrowser() {
+        let browser: puppeteer.Browser
+        try {
+            console.log("Opening the browser......")
+            browser  = await puppeteer.launch({
+                headless: false,
+                args: ["--disable-setuid-sandbox"],
+                'ignoreHTTPSErrors': true
+            })
+        } catch (err) {
+            console.log("Could not create a browser instance => : ", err)
+            return null
+        }
+        return browser
     }
 }
 
-export default new ConverterSandnes()
+export default ConverterSandnes

@@ -1,10 +1,9 @@
 import { CalendarData, IConverter } from "@common/types/interfaces"
 import puppeteer from "puppeteer"
 
-const baseUrl = "https://www.stavanger.kommune.no/renovasjon-og-miljo/tommekalender/finn-kalender/"
+const searchUrl = "https://www.stavanger.kommune.no/renovasjon-og-miljo/tommekalender/finn-kalender/"
 
-//const containerSelector = ".row.waste-calendar-search-block"
-const inputSelector = "input.js-address-search"
+const searchInputSelector = "input.js-address-search"
 const searcBtnSelector = "input.js-address-search-submit" //[type='submit'] 
 const resultSelector = ".js-address-result"
 const resultListSelector = `${resultSelector} ul li`
@@ -31,20 +30,14 @@ class ConverterSvg implements IConverter {
         console.log("got browser")
         let page = await browser.newPage()
         console.log("got page")
-        await page.goto(baseUrl)
-        console.log(`went to ${baseUrl}`)
-        
-        // await page.waitForSelector(containerSelector)
-        // console.log(`waited for ${containerSelector}`)
+        await page.goto(searchUrl)
         
         await page.waitForSelector(searcBtnSelector)
         
-        await page.$eval(inputSelector, (el, val) => (el as HTMLInputElement).value = val as string, this.address)
-        console.log(`value ${this.address} set, now click`)
+        // set address as search value
+        await page.$eval(searchInputSelector, (el, val) => (el as HTMLInputElement).value = val as string, this.address)
 
-        //await page.waitForSelector(searcBtnSelector)
         await page.click(searcBtnSelector)
-        console.log("search btn clicked")
         
         await page.waitForSelector(resultListSelector)
         console.log("got search result")
@@ -101,7 +94,7 @@ class ConverterSvg implements IConverter {
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i]
             const date = row.date.substring(0, 5)
-            //console.log(`date=${date}`)
+            
             const dateSplit = date.split(".")
             const day = parseInt(dateSplit[0])
             const month = parseInt(dateSplit[1]) -1

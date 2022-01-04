@@ -1,5 +1,5 @@
-import converterSvg from "../converters/converter-svg"
-import converterSandnes from "../converters/converter-sandnes"
+import ConverterSvg from "../converters/converter-svg"
+import ConverterSandnes from "../converters/converter-sandnes"
 import firestore from "./firestore"
 const db = firestore.getDb()
 import comparer from "./comparer"
@@ -105,9 +105,9 @@ class Data {
     getConverter(municipality: string, address: string): IConverter | null {
         switch (municipality) {
             case "stavanger":
-                return new converterSvg(address)
+                return new ConverterSvg(address)
             case "sandnes":
-                return converterSandnes
+                return new ConverterSandnes(address)
             default:
                 return null
         }
