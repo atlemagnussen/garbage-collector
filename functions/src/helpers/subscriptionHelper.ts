@@ -4,6 +4,17 @@ const db = firestore.getDb()
 const SUBCOLNAME = "subscription"
 
 class SubscriptionHelper {
+    async getAllSubscriptions() {
+        const colRef = db.collection(SUBCOLNAME)
+        const snapshot = await colRef.get()
+        let ret = snapshot.docs.map(doc => {
+            const data = doc.data() as SubscriptionData
+            data._id = doc.id
+            return data
+        })
+        return ret
+    }
+
     async getSubByToken(token: string) {
         console.log(`getSubByToken ${token}`)
         const docRef = db.collection(SUBCOLNAME).where('token', '==', token)

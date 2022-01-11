@@ -2,7 +2,7 @@ import admin from "./helpers/admin"
 import helper from "./helpers/messagingHelper"
 import subHelper from "./helpers/subscriptionHelper"
 import * as functions from "firebase-functions"
-import { SubscriptionMessage } from "@common/types/firebasetypes";
+import { SubscriptionMessage } from "@common/types/firebasetypes"
 import { CalendarSpecChanged, FirebaseCloudMessage, FirebaseSentMessages, SubscriptionData } from "@common/types/interfaces"
  
 /*
@@ -49,21 +49,34 @@ const checkAndSend = async () => {
                     helper.deleteMsg(msg._id!)
                 } else {
                     helper.updateMsg(msg, msg._id!)
-                    ret.success = false;
+                    ret.success = false
                 }
             }
         }
     }
-    return ret;
-};
+    return ret
+}
 
 export const checkAndSendSub = async (message: functions.pubsub.Message, context: functions.EventContext) => {
-    console.log(message.json);
+    console.log(message.json)
     try {
         const response = await checkAndSend()
         console.log('Successfully checked for messages:', response)
     } catch (error) {
         console.log('Error checked message:', error)
+    }
+}
+
+export const ensureNextMsg = async() => {
+    const subs = await subHelper.getAllSubscriptions()
+    for (let i=0; i<subs.length; i++) {
+        const sub = subs[i]
+        if (sub.calendars && sub.calendars.length > 0) {
+            sub.calendars.map(cal => {
+                const msgExisting = // helper.getMsgExistingforCalendar
+                cal
+            })
+        }
     }
 }
 
@@ -113,7 +126,7 @@ export const testMessage = async (req: functions.https.Request, res: functions.R
 */
 export const createdSub = async (snapshot: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
     const newSubscription = snapshot.data() as SubscriptionData
-    console.log(`sub created, subId='${context.params.subId}`);
+    console.log(`sub created, subId='${context.params.subId}`)
     const subId = context.params.subId
     const token = newSubscription.token
     const calendars = newSubscription.calendars
