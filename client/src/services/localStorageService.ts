@@ -7,6 +7,8 @@ export const getLocalStorage = (key: string) => {
 }
 
 export const setLocalStorage = (key: string, json: any) => {
-    const item = JSON.stringify(json)
-    localStorage.setItem(key, item)
+    if (json) {
+        const item = JSON.stringify(json)
+        localStorage.setItem(key, item)
+    }
 }
