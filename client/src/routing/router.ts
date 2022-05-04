@@ -1,9 +1,9 @@
-import { SvelteSubject } from "@app/store/reactive"
+import { BehaviorSubject } from "rxjs"
 import { Route } from "@common/types/interfaces"
-const curRoutePathSubject = new SvelteSubject<string>("")
+const curRoutePathSubject = new BehaviorSubject<string>("")
 export const curRoutePath = curRoutePathSubject.asObservable()
 
-const curRouteSubject = new SvelteSubject<Route>({ path: "/", component: "home-view"})
+const curRouteSubject = new BehaviorSubject<Route>({ path: "/", component: "home-view"})
 export const setCurRoute = (route: Route) => {
     curRouteSubject.next(route)
 }
@@ -17,11 +17,11 @@ export const goto = (e: Event) => {
     e.preventDefault()
     const target = e.currentTarget as HTMLAnchorElement
     const path = target.pathname
-    curRoutePathSubject.set(path)
+    curRoutePathSubject.next(path)
 }
 
 export const gotoPath = (path: string) => {
-    curRoutePathSubject.set(path)
+    curRoutePathSubject.next(path)
 }
 
 window.addEventListener("popstate", (event: PopStateEvent) => {
