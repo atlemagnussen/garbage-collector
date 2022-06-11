@@ -3,11 +3,10 @@
 This is a POC of a PWA ... with notifications, currently only supported on Android, Windows, Linux MacOS and so forth.
 Still missing on iOS (but Apple have now announceth their support will come in 2023)
 
-<figure>
-    <img src="https://storage.googleapis.com/atle-static/backgrounds/avfallsrute.jpg"
-         alt="avfallsrute.no">
-    <figcaption>avfallsrute.no</figcaption>
-</figure>
+<img src="https://storage.googleapis.com/atle-static/backgrounds/avfallsrute.jpg"
+    width="350"
+    height="532"
+    alt="avfallsrute.no">
 
 This is a simple calendar able to display when different types of garbage is scheduled to be collected and then push you a notification the day before this happens so that **you** remember to push your bin on to the road where the garbage truck can pick it up. They won't come to your house and pick it up even if it's 10 metres
 
