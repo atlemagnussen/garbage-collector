@@ -16,10 +16,10 @@ class GMessages {
         if (config.val.vapidPublicKey) {
             this.vapidPublicKey = config.val.vapidPublicKey;
         } else {
-            console.info("no vapid public key");
+            console.info("no vapid public key")
         }
         
-        this.init();
+        this.init()
     }
     async init() {
         const reg = await setupWb()
