@@ -22,7 +22,11 @@ So far I only have a working scraper for Stavanger.
 Background was that in Norway every single municipality is shipping their own garbage calendar app and then spend very little money on maintaining these apps. Often the design is poor, but often they won't do the one important thing, to remind you. Android phone manufacturers will also often kill your important notification app to save battery (I'm just guessing)
 Usually, the app for my municipality would stop pushing notifications after the first one.
 
-So when I figured out that web apps could do push notifications in 2018 I had a good use case. And it has been extremely reliable for Android and Windows, probably since Google and Microsoft is backing this technology very heavily.
+And if you happen to be so lucky that you are responsible for garbage in two different municipalities you must have **two** terrible apps.
+
+When I figured out that web apps could do push notifications in 2018 I had a good use case. And it has been extremely reliable for Android and Windows, probably since Google and Microsoft is backing this technology very heavily.
+
+It would have been simpler if these garbage data were openly available, but I have never found them to be so, so therefore we need to do the heavy work of scraping, or try to influence politicians.
 
 ## Stack
 
