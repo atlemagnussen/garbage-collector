@@ -17,21 +17,45 @@ But usually, the app for my municipality would always stop pushing notifications
 
 So when I figured out that web apps could do push notifications in 2018 I had a good use case
 
-## Setup
+## Stack
+
+[Firebase](https://firebase.google.com/), [Lit](https://lit.dev), [Workbox](https://developer.chrome.com/docs/workbox/)
+
+## Run locally and debug
+
+```sh
+npm start
+```
+
+Debugging locally can be some hazzle since the serviceworker is loaded also here and will cache the app.
+
+## Setup cloud
 
 Requires knowledge of setting up a Firebase project with Firestore database and Firebase Cloud Messaging
 It also uses a pub/sub in Google Cloud for schedule of pushing the notifications (firebase project will also be a google cloud project)
+
 ## Deploy
 
+Firebase needed for deployment:
+
 ```sh
+npm install -g firebase-tools
+```
+
+### Client
+
+```sh
+cd client
 firebase deploy
 
 # only rules
 firebase deploy --only firestore:rules
 ```
 
-Firebase needed for deployment:
+### Functions
 
 ```sh
-npm install -g firebase-tools
+cd functions
+firebase deploy
+
 ```
