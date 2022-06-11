@@ -1,25 +1,49 @@
 # Garbage collector
 
-This is a POC of a PWA ... (who doesn't like 3 letter abbreviations)
+This is a POC of a PWA ... with notifications, currently only supported on Android, Windows, Linux MacOS and so forth.
+Still missing on iOS (but Apple have now announceth their support will come in 2023)
 
-... of a simple calendar able to display when different types of garbage is scheduled to be collected and then push you a notification the day before this happens so that **you** remember to push your bin on to the road where the garbage truck can pick it up. They won't come to your house and pick it up even if it's 10 metres
+![avfallsrute.no](https://storage.googleapis.com/atle-static/backgrounds/avfallsrute.jpg)
 
-Really really important topic, since people don't remember anything in the smart phone era, people would forget and then go throw their garbage somewhere random.
+This is a simple calendar able to display when different types of garbage is scheduled to be collected and then push you a notification the day before this happens so that **you** remember to push your bin on to the road where the garbage truck can pick it up. They won't come to your house and pick it up even if it's 10 metres
 
-Given the backend scraper providing the data is working for a given address and municipality, this web app works. I have deployed it on www.avfallsrute.no
+Really really important topic, since people don't remember anything in the smart phone era
+
+Given the backend scraper providing the data is working for a given address and municipality, this web app works. I have deployed this app as is on www.avfallsrute.no
 
 The design supports limitless amounts of municipalities, unlike Norwegian garbage apps.
 
 So far I only have a working scraper for Stavanger, you might guess why.
 
-Background was that we live in an age in Norway where every single municipality in Norway is shipping their own garbage calendar app and very little effort and maintenance is put into these apps. In addition we have Android phone manufacturers struggling with their bloatware destroying battery life so they try to quick fix it by killing off every process including the apps push notifications service (or something, I don't really know)
-But usually, the app for my municipality would always stop pushing notifications after the first one.
+Background was that we live in an age in Norway where every single municipality in Norway is shipping their own garbage calendar app and very little effort and maintenance is put into these apps. In addition we have Android phone manufacturers struggling with battery life so they will kill your important notification app very often (I'm just guessing)
+Usually, the app for my municipality would stop pushing notifications after the first one.
 
-So when I figured out that web apps could do push notifications in 2018 I had a good use case
+So when I figured out that web apps could do push notifications in 2018 I had a good use case. And it has been extremely reliable for Android, probably since Google is backing this technology very heavily.
 
 ## Stack
 
-[Firebase](https://firebase.google.com/), [Lit](https://lit.dev), [Workbox](https://developer.chrome.com/docs/workbox/)
+Backend
+
+- [Firebase](https://firebase.google.com/)
+- [NodeJs](https://nodejs.org/en/)
+
+Web client
+
+- [Lit](https://lit.dev)
+- [Workbox](https://developer.chrome.com/docs/workbox/)
+
+## design
+
+There are couple of endpoints in the backend.
+
+- fetching garbage data for a given address via the scraper (if it's not already cached in firestore)
+- listing municipalities
+- subscribing to push notifications
+- unsubscribing to push notifications
+- listing a device' current subscriptions
+
+The web client is just about looking up garbage calendar and then be able to subscribe to push notifications.
+The tricky part is the service worker and push notifications stuff, so I used workbox library for making it a little simpler.
 
 ## Run locally and debug
 

@@ -65,12 +65,6 @@ class Data {
             return null
         }
         
-        // querySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data())
-        // })
-        //const docRef = colRef.where("address", "array-contains", a).where("year", "==", y);
-        //const docs = await docRef.get();
-        
         if (snapshot.docs.length === 1) {
             const doc = snapshot.docs[0]
             const data = doc.data()

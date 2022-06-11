@@ -67,18 +67,18 @@ export const checkAndSendSub = async (message: functions.pubsub.Message, context
     }
 }
 
-export const ensureNextMsg = async() => {
-    const subs = await subHelper.getAllSubscriptions()
-    for (let i=0; i<subs.length; i++) {
-        const sub = subs[i]
-        if (sub.calendars && sub.calendars.length > 0) {
-            sub.calendars.map(cal => {
-                const msgExisting = // helper.getMsgExistingforCalendar
-                cal
-            })
-        }
-    }
-}
+// export const ensureNextMsg = async() => {
+//     const subs = await subHelper.getAllSubscriptions()
+//     for (let i=0; i<subs.length; i++) {
+//         const sub = subs[i]
+//         if (sub.calendars && sub.calendars.length > 0) {
+//             sub.calendars.map(cal => {
+//                 const msgExisting = helper.getMsgExistingforCalendar()
+//                 cal
+//             })
+//         }
+//     }
+// }
 
 /*
     test send message

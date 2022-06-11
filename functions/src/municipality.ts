@@ -15,6 +15,7 @@ export const getMuns = async (req: functions.https.Request, res: functions.Respo
         "result": "0"
     }
     let colRef = null
+    // fetch one municipality
     if (name) {
         colRef = db.collection("municipalities").where("name", "==", name)
         const docs = await colRef.get()
@@ -28,7 +29,9 @@ export const getMuns = async (req: functions.https.Request, res: functions.Respo
                 res.json(data)
             })
         }
-    } else {
+    } 
+    // list all
+    else {
         colRef = db.collection("municipalities")
         const docs = await colRef.get()
 
