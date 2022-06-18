@@ -12,7 +12,7 @@ Simple calendar able to display when different types of garbage is scheduled to 
 
 Really really important topic, since people (like me) don't remember anything anymore and the garbage truck workers won't walk to your house to pick it up.
 
-Given the backend scraper providing the data is working for an address and municipality, this web app works. I have deployed this app as is on www.avfallsrute.no
+Given the backend scraper providing the data is working for an address and municipality, this web app works. I have deployed this app as is on [www.avfallsrute.no](https://www.avfallsrute.no/stavanger/otto-olsens-gate-30)
 
 The design supports limitless amounts of municipalities, unlike Norwegian garbage apps.
 
