@@ -8,10 +8,9 @@ Still missing on **iOS** (but Apple have now announceth their support will come 
     height="532"
     alt="avfallsrute.no">
 
-Simple calendar able to display when different types of garbage is scheduled to be collected and then push you a notification the day before so that **you** remember to push your bin on to the road where the garbage truck can pick it up.
-They won't come to your house and pick it up even if it's 10 metres
+Simple calendar able to display when different types of garbage is scheduled to be collected and optionally push you a notification the day before so that **you** remember to push your bin on to the road where the garbage truck can pick it up.
 
-Really really important topic, since people don't remember anything in the smart phone era
+Really really important topic, since people (like me) don't remember anything anymore and the garbage truck workers won't walk to your house to pick it up.
 
 Given the backend scraper providing the data is working for an address and municipality, this web app works. I have deployed this app as is on www.avfallsrute.no
 
@@ -19,14 +18,18 @@ The design supports limitless amounts of municipalities, unlike Norwegian garbag
 
 So far I only have a working scraper for Stavanger.
 
-Background was that in Norway every single municipality is shipping their own garbage calendar app and then spend very little money on maintaining these apps. Often the design is poor, but often they won't do the one important thing, to remind you. Android phone manufacturers will also often kill your important notification app to save battery (I'm just guessing)
-Usually, the app for my municipality would stop pushing notifications after the first one.
+## Background
 
-And if you happen to be so lucky that you are responsible for garbage in two different municipalities you must have **two** terrible apps.
+It's not that we dont have apps like this in Norway, we do have a lot actually - often one per municipality.
+So that brings us to the three reasons I created my own:
+
+- The official apps' push notifications have been unreliable on Android phones for different reasons.
+- If you are responsible for the garbage being collected in two different municipalities, you probably need two apps.
+- The apps would usually be limited to Android and iOS so you can't get push notifications on any other platform.
 
 When I figured out that web apps could do push notifications in 2018 I had a good use case. And it has been extremely reliable for Android and Windows, probably since Google and Microsoft is backing this technology very heavily.
 
-It would have been simpler if these garbage data were openly available, but I have never found them to be so, so therefore we need to do the heavy work of scraping, or try to influence politicians.
+It would have been simpler if these garbage data were openly available, but I have never found them to be so, so therefore we need to do the grindy work of scraping, or try to influence politicians.
 
 ## Stack
 
@@ -42,7 +45,7 @@ Web client
 
 ## design
 
-There are couple of endpoints in the backend.
+There are couple of endpoints in the backend:
 
 - fetching garbage data for a given address via the scraper (if it's not already cached in firestore)
 - listing municipalities
@@ -51,7 +54,8 @@ There are couple of endpoints in the backend.
 - listing a device' current subscriptions
 
 The web client is just about looking up and displaying garbage calendar and give option to subscribe to notifications.
-The tricky part is the service worker and push notification stuff, so I used workbox for making it a little simpler.
+The notifications are done through a service worker and the app is installable.
+It does not look great on desktop, but on mobile it's OK. You can swipe through the months.
 
 ## Run locally and debug
 
