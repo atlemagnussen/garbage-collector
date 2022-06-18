@@ -235,11 +235,9 @@ export class CalendarWidget extends LitElement {
             if (this.data && this.data.year && this.data.municipality && this.data.address) {
                 const calendar = html`
                     <div class="days-view" ${ref(this.daysView)}>
-                        ${this.months.map(m => {
-                            return html`<month-days .year=${this.data.year} .month=${m} hash=${this.data.hash}></month-days>`
-                        })}
-                        
-                    }
+                        ${this.months.map(m =>
+                            html`<month-days .year=${this.data.year} .month=${m} hash=${this.data.hash}></month-days>`
+                        )}
                     </div>
                 `
                 return html`${head}${calendar}`
