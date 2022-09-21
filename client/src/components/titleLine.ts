@@ -8,6 +8,7 @@ import messaging from "@app/services/messaging"
 import { selectedMun } from "@app/store/munStore"
 import { observe } from "@app/directives/ObservableDirective"
 import { Municipality } from "@common/types/interfaces"
+import toast from "@app/services/toastService"
 
 @customElement('title-line')
 export class TitleLine extends LitElement {
@@ -68,12 +69,17 @@ export class TitleLine extends LitElement {
     }
 
     async toggleSub() {
-        if (this.isSub) {
-            const res = await messaging.unsubscribe(this.mun.name!, this.address)
-            console.log(`unsub=${res}`)
-        } else {
-            const res = await messaging.subscribe(this.mun.name!, this.address)
-            console.log(`sub=${res}`)
+        try {
+            if (this.isSub) {
+                const res = await messaging.unsubscribe(this.mun.name!, this.address)
+                console.log(`unsub=${res}`)
+            } else {
+                const res = await messaging.subscribe(this.mun.name!, this.address)
+                console.log(`sub=${res}`)
+            }
+        }
+        catch (e: any) {
+            toast.error(e.message)
         }
     }
     
