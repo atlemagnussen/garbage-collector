@@ -17,9 +17,7 @@
     },
     "dependencies": {
         "@types/puppeteer": "^5.4.4",
-        "firebase-functions": "^3.16.0",
-        "lodash": "^4.17.21",
-        "lodash-es": "^4.17.21",
+        "firebase-functions": "^3.24.0",
         "puppeteer": "^18.0.5"
     },
     "private": true,

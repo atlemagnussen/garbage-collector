@@ -56,7 +56,7 @@ const resHandler = async (res: Response) => {
         const contentType = res.headers.get("content-type")
         if (res.status === 200 || res.status === 201) {
             
-            if (contentType && contentType.includes("application/json")) {
+            if (contentType && contentType.includes(jsonContentType)) {
                 const json = await res.json()
                 return json
             }

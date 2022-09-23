@@ -2,99 +2,119 @@ import admin from "./helpers/admin"
 import * as functions from "firebase-functions"
 import helper from "./helpers/subscriptionHelper"
 import { FirebaseCloudMessage } from "@common/types/interfaces"
+import cors from "cors"
 
-const cors = (res: functions.Response<any>) => {
-    res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')
-    res.set("Access-Control-Allow-Credentials", "true")
-    res.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
-    res.set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
-}
+const corsFunc = cors({
+    origin: "https://www.avfallsrute.no"
+})
+
+// const cors = (res: functions.Response<any>) => {
+//     res.set('Access-Control-Allow-Origin', 'https://www.avfallsrute.no')
+//     res.set("Access-Control-Allow-Credentials", "true")
+//     res.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
+//     res.set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
+// }
 
 export const subscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
-    cors(res)
-    if (!validate(req, res))
-        return
+    console.log("subscribe method")
+    corsFunc(req, res, async () => {
+        const token = req.body.token
+        const municipality = req.body.municipality
+        const address = req.body.address
+        const data = {token, municipality, address}
     
-    let id = null
-    if (req.body.id) {
-        id = req.body.id
-    }
-    const token = req.body.token
-    const municipality = req.body.municipality
-    const address = req.body.address
-    console.log(`subscribe ${municipality}, ${address}`)
-
-    const idOut = await helper.addToOrCreateSub(token, municipality, address, id)
-
-    const message: FirebaseCloudMessage = {
-        "data": {
-            type: "subscribed",
-            municipality,
-            address,
-            id: idOut!
-        },
-        token
-    }
-    try {
-        const response = await admin.messaging().send(message)
-        console.log('Successfully sent message:', response)
-    } catch (error) {
-        console.log('Error sending message:', error)
-    }
-    res.json(message.data)
+        if (!validate(data, res))
+            return
+        
+        let id = null
+        if (req.body.id) {
+            id = req.body.id
+        }
+        
+        console.log(`subscribe ${municipality}, ${address}`)
+    
+        const idOut = await helper.addToOrCreateSub(token, municipality, address, id)
+    
+        const message: FirebaseCloudMessage = {
+            "data": {
+                type: "subscribed",
+                municipality,
+                address,
+                id: idOut!
+            },
+            token
+        }
+        try {
+            const response = await admin.messaging().send(message)
+            console.log('Successfully sent message:', response)
+        } catch (error) {
+            console.log('Error sending message:', error)
+        }
+        res.status(200).json(message.data)
+    })
+    
+    
 }
 
 export const unsubscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
-    cors(res)
-    if (!validate(req, res))
-        return
+    functions.logger.info("unsubscribe")
+
+    corsFunc(req, res, async () => {
+        const token = req.body.token
+        const municipality = req.body.municipality
+        const address = req.body.address
     
-    let id = null
-    if (req.body.id) {
-        id = req.body.id
-    }
-    const token = req.body.token
-    const municipality = req.body.municipality
-    const address = req.body.address
-    console.log(`unsubscribe ${municipality}, ${address}. Id='${id}'`)
+        const data = {token, municipality, address}
+        functions.logger.info("data", data)
 
-    const idOut = await helper.removeSub(token, municipality, address, id)
+        if (!validate(data, res))
+            return
+    
+        let id = null
+        if (req.body.id) {
+            id = req.body.id
+        }
+        
+        functions.logger.info(`unsubscribe ${municipality}, ${address}. Id='${id}'`)
 
-    const message: FirebaseCloudMessage = {
-        "data": {
-            type: "unsubscribed",
-            municipality,
-            address,
-            "id": idOut!
-        },
-        token
-    }
+        const idOut = await helper.removeSub(token, municipality, address, id)
+        functions.logger.info("unsubscribed")
 
-    try {
-        const response = await admin.messaging().send(message)
-        console.log('Successfully sent message:', response)
-    } catch (error) {
-        console.log('Error sending message:', error)
-    }
-    res.json(message.data)
+        const message: FirebaseCloudMessage = {
+            "data": {
+                type: "unsubscribed",
+                municipality,
+                address,
+                "id": idOut!
+            },
+            token
+        }
+
+        try {
+            const response = await admin.messaging().send(message)
+            functions.logger.info('Successfully sent message:', response)
+        } catch (error) {
+            functions.logger.error('Error sending message:', error)
+        }
+        res.status(200).json(message.data)
+    })
 }
 
-const validate = (req: functions.https.Request, res: functions.Response<any>) => {
-    if (!req.body.token) {
-        res.statusCode = 400
-        res.json({"error": "token is missing"})
-        res.end()
-        return false
-    }
-    if (!req.body.municipality) {
-        res.statusCode = 400
-        res.json({"error": "municipality is missing"})
-        res.end()
-        return false
-    }
-    if (!req.body.municipality) {
-        res.statusCode = 400
-        res.json({"address": "address is missing"})
+const validate = (body: any, res: functions.Response<any>) => {
+    
+    let error = ""
+    if (!body.token)
+        error = `${error} token is missing`
+    
+    if (!body.municipality)
+        error = `${error} municipality is missing`
+    
+    if (!body.address)
+        error = `${error} address is missing`
+    
+    if (error) {
+        console.warn("error validation", error)
+        res.status(400).json({error})
         res.end()
         return false
     }
@@ -102,30 +122,35 @@ const validate = (req: functions.https.Request, res: functions.Response<any>) =>
 }
 
 export const getSubscriptions = async (req: functions.https.Request, res: functions.Response<any>) => {
-    cors(res)
-    if (!req.body.token) {
-        res.json({"error": "token is missing"})
-        res.end()
-        return
-    }
-    let id = null
-    if (req.body.id) {
-        id = req.body.id
-    }
-    const token = req.body.token
-    const exists = await helper.getSub(token, id)
-    res.json(exists)
+    
+    corsFunc(req, res, async () => {
+        if (!req.body.token) {
+            res.status(400).json({"error": "token is missing"})
+            res.end()
+            return
+        }
+        let id = null
+        if (req.body.id) {
+            id = req.body.id
+        }
+        const token = req.body.token
+        const exists = await helper.getSub(token, id)
+        res.status(200).json(exists)
+    })
+    
 }
 export const updateSubToken = async(req: functions.https.Request, res: functions.Response<any>) => {
-    cors(res)
-    if (!req.body.token || !req.body.id) {
-        res.json({"error": "tokenorid is missing"})
-        res.end()
-        return
-    }
-    const token = req.body.token
-    const id = req.body.id
-    const result = await helper.updateToken(id, token)
-    res.json(result)
+    
+    corsFunc(req, res, async () => {
+        if (!req.body.token || !req.body.id) {
+            res.status(400).json({"error": "tokenorid is missing"})
+            res.end()
+            return
+        }
+        const token = req.body.token
+        const id = req.body.id
+        const result = await helper.updateToken(id, token)
+        res.status(200).json(result)
+    })
+    
 }
-
