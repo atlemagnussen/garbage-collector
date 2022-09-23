@@ -59,16 +59,19 @@ export const subscribe = async (req: functions.https.Request, res: functions.Res
 export const unsubscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
     cors(res)
     if (!req.body.token) {
+        res.statusCode = 400
         res.json({"error": "token is missing"})
         res.end()
         return
     }
     if (!req.body.municipality) {
+        res.statusCode = 400
         res.json({"error": "municipality is missing"})
         res.end()
         return
     }
     if (!req.body.municipality) {
+        res.statusCode = 400
         res.json({"address": "address is missing"})
         res.end()
         return
