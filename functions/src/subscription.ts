@@ -12,21 +12,9 @@ const cors = (res: functions.Response<any>) => {
 
 export const subscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
     cors(res)
-    if (!req.body.token) {
-        res.json({"error": "token is missing"})
-        res.end()
+    if (!validate(req, res))
         return
-    }
-    if (!req.body.municipality) {
-        res.json({"error": "municipality is missing"})
-        res.end()
-        return
-    }
-    if (!req.body.municipality) {
-        res.json({"address": "address is missing"})
-        res.end()
-        return
-    }
+    
     let id = null
     if (req.body.id) {
         id = req.body.id
@@ -58,24 +46,9 @@ export const subscribe = async (req: functions.https.Request, res: functions.Res
 
 export const unsubscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
     cors(res)
-    if (!req.body.token) {
-        res.statusCode = 400
-        res.json({"error": "token is missing"})
-        res.end()
+    if (!validate(req, res))
         return
-    }
-    if (!req.body.municipality) {
-        res.statusCode = 400
-        res.json({"error": "municipality is missing"})
-        res.end()
-        return
-    }
-    if (!req.body.municipality) {
-        res.statusCode = 400
-        res.json({"address": "address is missing"})
-        res.end()
-        return
-    }
+    
     let id = null
     if (req.body.id) {
         id = req.body.id
@@ -104,6 +77,28 @@ export const unsubscribe = async (req: functions.https.Request, res: functions.R
         console.log('Error sending message:', error)
     }
     res.json(message.data)
+}
+
+const validate = (req: functions.https.Request, res: functions.Response<any>) => {
+    if (!req.body.token) {
+        res.statusCode = 400
+        res.json({"error": "token is missing"})
+        res.end()
+        return false
+    }
+    if (!req.body.municipality) {
+        res.statusCode = 400
+        res.json({"error": "municipality is missing"})
+        res.end()
+        return false
+    }
+    if (!req.body.municipality) {
+        res.statusCode = 400
+        res.json({"address": "address is missing"})
+        res.end()
+        return false
+    }
+    return true
 }
 
 export const getSubscriptions = async (req: functions.https.Request, res: functions.Response<any>) => {
