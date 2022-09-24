@@ -44,7 +44,7 @@ class FirestoreCrud {
             } else {
                 docRef = colRef.doc()
             }
-            ret.id = docRef.id
+            
             if (data._id) {
                 Reflect.deleteProperty(data, "_id")
             }
@@ -52,6 +52,8 @@ class FirestoreCrud {
                 Reflect.deleteProperty(data, "id")
             }
             await docRef.set(data)
+            
+            ret.id = docRef.id
             ret.success = true
         } catch (e) {
             console.error(e)

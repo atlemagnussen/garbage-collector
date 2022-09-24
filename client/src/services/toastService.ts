@@ -9,8 +9,8 @@ class ToastService {
             size: "",
             position: "left",
             msg
-        };
-        toastStore.add(toast, 10);
+        }
+        toastStore.add(toast, 10)
     }
     biginfo(msg: string, click?: Function) {
         const toast: Toast = {
@@ -18,10 +18,10 @@ class ToastService {
             size: "big",
             position: "left",
             msg
-        };
+        }
         if (click)
             toast.click = click;
-        toastStore.add(toast, 20);
+        toastStore.add(toast, 20)
     }
     error(msg: string) {
         const toast: Toast = {
@@ -29,8 +29,8 @@ class ToastService {
             size: "normal",
             position: "right",
             msg
-        };
-        toastStore.add(toast);
+        }
+        toastStore.add(toast)
     }
     success(msg: string) {
         const toast: Toast = {
@@ -38,8 +38,8 @@ class ToastService {
             size: "normal",
             position: "right",
             msg
-        };
-        toastStore.add(toast);
+        }
+        toastStore.add(toast)
     }
     showNotification(payload: MessagePayload) {
         let text = "notifikasjon"
@@ -54,7 +54,7 @@ class ToastService {
             }
             text = `${text}:\n${data.address}, ${data.municipality}`;
         }
-        
+        this.biginfo(text)
     }
 }
 

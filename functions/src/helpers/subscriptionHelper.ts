@@ -66,6 +66,7 @@ class SubscriptionHelper {
     async addToOrCreateSub (token: string, municipality: string, address: string, idInput: string) {
         const exists = await this.getSub(token, idInput)
         if (exists) {
+            console.log("sub exists")
             if (exists.calendars && Array.isArray(exists.calendars)) {
                 if (exists.calendars.some((a) => a.municipality === municipality && a.address === address)) {
                     return "already subscribing"
@@ -76,8 +77,8 @@ class SubscriptionHelper {
             exists.calendars.push({municipality, address})
             exists.updated = new Date()
             const result = await firestore.createOrUpdate(SUBCOLNAME, exists, exists._id)
-            console.log(result)
-            return exists._id
+            console.log("result", result)
+            return result.id
         }
         const doc: SubscriptionData = {
             token,

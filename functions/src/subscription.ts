@@ -16,7 +16,7 @@ const corsFunc = cors({
 // }
 
 export const subscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
-    console.log("subscribe method")
+    functions.logger.info("subscribe method")
     corsFunc(req, res, async () => {
         const token = req.body.token
         const municipality = req.body.municipality
@@ -31,29 +31,27 @@ export const subscribe = async (req: functions.https.Request, res: functions.Res
             id = req.body.id
         }
         
-        console.log(`subscribe ${municipality}, ${address}`)
+        functions.logger.info(`subscribe ${municipality}, ${address}`)
     
         const idOut = await helper.addToOrCreateSub(token, municipality, address, id)
-    
+        functions.logger.info("added subscription, idOut=", idOut)
         const message: FirebaseCloudMessage = {
             "data": {
                 type: "subscribed",
                 municipality,
                 address,
-                id: idOut!
+                "id": idOut ?? "no-id"
             },
             token
         }
         try {
             const response = await admin.messaging().send(message)
-            console.log('Successfully sent message:', response)
+            functions.logger.info('Successfully sent message:', response)
         } catch (error) {
-            console.log('Error sending message:', error)
+            functions.logger.error('Error sending message:', error)
         }
         res.status(200).json(message.data)
     })
-    
-    
 }
 
 export const unsubscribe = async (req: functions.https.Request, res: functions.Response<any>) => {
@@ -85,7 +83,7 @@ export const unsubscribe = async (req: functions.https.Request, res: functions.R
                 type: "unsubscribed",
                 municipality,
                 address,
-                "id": idOut!
+                "id": idOut ?? "no-id"
             },
             token
         }
@@ -113,7 +111,7 @@ const validate = (body: any, res: functions.Response<any>) => {
         error = `${error} address is missing`
     
     if (error) {
-        console.warn("error validation", error)
+        functions.logger.warn("error validation", error)
         res.status(400).json({error})
         res.end()
         return false

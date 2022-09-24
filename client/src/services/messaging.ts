@@ -37,6 +37,7 @@ class GMessages {
             }
         }
         onMessage(this.messaging, (payload) => {
+            console.log("message received in client", payload)
             toast.showNotification(payload)
         })
         user.syncSubscriptionsFromServer()
