@@ -1,6 +1,6 @@
 declare const self: ServiceWorkerGlobalScope
 import {firebaseApp} from "@app/services/firebaseInit"
-import { onBackgroundMessage, getMessaging } from "firebase/messaging/sw";
+import { onBackgroundMessage, getMessaging } from "firebase/messaging/sw"
 import {clientsClaim} from "workbox-core"
 import {precacheAndRoute,createHandlerBoundToURL} from "workbox-precaching"
 import {registerRoute, NavigationRoute} from "workbox-routing"
