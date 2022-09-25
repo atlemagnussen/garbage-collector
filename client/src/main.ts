@@ -24,7 +24,7 @@ import "@app/components/calendarDay"
 import "@app/components/subscriptionList"
 
 import "@app/components/toast"
-
+import "@app/components/icons/WorkingIcon"
 import "@app/routing/index"
 
 import { materialIconsStyle } from "@app/style/stylesheets"

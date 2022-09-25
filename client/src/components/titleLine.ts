@@ -1,5 +1,5 @@
 import {LitElement, html, css, unsafeCSS} from "lit"
-import {customElement, property} from "lit/decorators.js"
+import {customElement, property, state} from "lit/decorators.js"
 import { materialIconsStyle } from "@app/style/stylesheets"
 import {toggleDisplaySearch} from "@app/store/pageStateStore"
 import {isSubscribing} from "@app/store/calendarDataStore"
@@ -15,6 +15,9 @@ export class TitleLine extends LitElement {
     private isSub = false
     private subs: Subscription[] = []
     private mun: Municipality = {}
+
+    @state()
+    private loading = false
 
     private $component = this
     static styles = css`
@@ -69,6 +72,10 @@ export class TitleLine extends LitElement {
     }
 
     async toggleSub() {
+        if (this.loading)
+            return
+        
+        this.loading = true
         try {
             if (this.isSub) {
                 const res = await messaging.unsubscribe(this.mun.name!, this.address)
@@ -81,6 +88,9 @@ export class TitleLine extends LitElement {
         catch (e: any) {
             toast.error(e.message)
         }
+        finally {
+            this.loading = false
+        }
     }
     
     render() {
@@ -91,14 +101,21 @@ export class TitleLine extends LitElement {
                     <span class="material-icons">search</span>
                 </div>
                 <h2 class="title">${this.address.split("-").join(" ")}</h2>
-                <div class="button" @click=${this.toggleSub}>
-                    ${observe(isSubscribing, (isSub: boolean) => {
-                        let bellIcon = isSub ? "notifications_active" : "notifications"
-                        this.isSub = isSub
-                        
-                        return html`<span class="material-icons">${bellIcon}</span>`
-                    })}
-                </div>
+                ${this.loading ?
+                    html`<div class="button">
+                        <garbage-working></garbage-working>
+                    </div>`
+                : html`
+                    <div class="button" @click=${this.toggleSub}>
+                        ${observe(isSubscribing, (isSub: boolean) => {
+                            let bellIcon = isSub ? "notifications_active" : "notifications"
+                            this.isSub = isSub
+                            
+                            return html`<span class="material-icons">${bellIcon}</span>`
+                        })}
+                    </div>
+                    `
+                }
             </div>
         `
     }

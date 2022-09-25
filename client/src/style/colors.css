@@ -23,4 +23,6 @@
 
     --default: var(--light-grey);
     --background: #1f45ec;
+
+    --garbage-medium: 24px;
 }

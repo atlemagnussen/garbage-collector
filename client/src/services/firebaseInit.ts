@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app"
+import { FirebaseOptions, initializeApp } from "firebase/app"
 
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
     apiKey: "AIzaSyA5lAZW87_WUzrTENeo0cYvu7RbNpUpx6c",
     authDomain: "avfallskalender-228213.firebaseapp.com",
     databaseURL: "https://avfallskalender-228213.firebaseio.com",
